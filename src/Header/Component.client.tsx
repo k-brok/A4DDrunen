@@ -1,4 +1,5 @@
 'use client'
+
 import { useHeaderTheme } from '@/providers/HeaderTheme'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -14,7 +15,6 @@ interface HeaderClientProps {
 }
 
 export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
-  /* Storing the value in a useState to avoid hydration errors */
   const [theme, setTheme] = useState<string | null>(null)
   const { headerTheme, setHeaderTheme } = useHeaderTheme()
   const pathname = usePathname()
@@ -30,12 +30,18 @@ export const HeaderClient: React.FC<HeaderClientProps> = ({ data }) => {
   }, [headerTheme])
 
   return (
-    <header className="container relative z-20   " {...(theme ? { 'data-theme': theme } : {})}>
-      <div className="py-8 flex justify-between">
-        <Link href="/">
-          <Logo loading="eager" priority="high" className="invert dark:invert-0" />
-        </Link>
-        <HeaderNav data={data} />
+    <header
+      className="relative sticky top-0 z-20 border-b-2 border-dashed border-primary/20 bg-background/99"
+      {...(theme ? { 'data-theme': theme } : {})}
+    >
+      <div className="container">
+        <div className="flex justify-between pt-3 pb-1">
+          <Link href="/">
+            <Logo loading="eager" priority="high" className="!w-[80px]" />
+          </Link>
+
+          <HeaderNav data={data} />
+        </div>
       </div>
     </header>
   )

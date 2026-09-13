@@ -6,11 +6,18 @@ const config = {
         DEFAULT: {
           css: [
             {
-              '--tw-prose-body': 'var(--text)',
-              '--tw-prose-headings': 'var(--text)',
+              '--tw-prose-body': 'var(--foreground)',
+              '--tw-prose-headings': 'var(--foreground)',
+              '--tw-prose-links': 'var(--primary)',
+              '--tw-prose-bold': 'var(--foreground)',
               h1: {
-                fontWeight: 'normal',
+                fontWeight: '700',
                 marginBottom: '0.25em',
+                color: 'var(--primary)',
+              },
+              h2: {
+                fontWeight: 600,
+                color: 'var(--secondary)',
               },
             },
           ],
@@ -23,7 +30,6 @@ const config = {
               },
               h2: {
                 fontSize: '1.25rem',
-                fontWeight: 600,
               },
             },
           ],

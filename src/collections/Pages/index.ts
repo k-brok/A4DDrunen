@@ -7,6 +7,17 @@ import { CallToAction } from '../../blocks/CallToAction/config'
 import { Content } from '../../blocks/Content/config'
 import { FormBlock } from '../../blocks/Form/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
+import { BadgeStamp } from '../../blocks/BadgeStamp/config'
+import { IntroHeading } from '../../blocks/IntroHeading/config'
+import { ButtonGroup } from '../../blocks/ButtonGroup/config'
+import { SponsorGroup } from '../../blocks/SponsorGroup/config'
+import { Countdown } from '../../blocks/Countdown/config'
+import { WaveSection } from '../../blocks/WaveSection/config'
+import { RouteGroup } from '../../blocks/RouteGroup/config'
+import { FaqGroup } from '../../blocks/FaqGroup/config'
+import { FlagDivider } from '@/blocks/FlagDivider/config'
+import { RouteDetailGroup } from '@/blocks/RouteDetailGroup/config'
+import { RegistrationForm } from '@/blocks/RegistrationForm/config'
 import { hero } from '@/heros/config'
 import { slugField } from 'payload'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
@@ -72,7 +83,24 @@ export const Pages: CollectionConfig<'pages'> = {
             {
               name: 'layout',
               type: 'blocks',
-              blocks: [CallToAction, Content, MediaBlock, Archive, FormBlock],
+              blocks: [
+                CallToAction,
+                Content,
+                MediaBlock,
+                Archive,
+                FormBlock,
+                BadgeStamp,
+                IntroHeading,
+                ButtonGroup,
+                SponsorGroup,
+                Countdown,
+                WaveSection,
+                RouteGroup,
+                FaqGroup,
+                FlagDivider,
+                RouteDetailGroup,
+                RegistrationForm,
+              ],
               required: true,
               admin: {
                 initCollapsed: true,

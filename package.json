@@ -1,9 +1,10 @@
 {
-  "name": "a4-d-drunen",
+  "name": "a4ddrunen",
   "version": "1.0.0",
   "description": "Website template for Payload",
   "license": "MIT",
   "type": "module",
+  "packageManager": "pnpm@11.25.0",
   "scripts": {
     "build": "cross-env NODE_OPTIONS=--no-deprecation next build",
     "postbuild": "next-sitemap --config next-sitemap.config.cjs",
@@ -22,7 +23,10 @@
     "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts"
   },
   "dependencies": {
+    "@mollie/api-client": "^4.6.0",
     "@payloadcms/admin-bar": "3.89.0",
+    "@payloadcms/db-postgres": "3.89.0",
+    "@payloadcms/db-sqlite": "3.89.0",
     "@payloadcms/live-preview-react": "3.89.0",
     "@payloadcms/next": "3.89.0",
     "@payloadcms/plugin-form-builder": "3.89.0",
@@ -51,8 +55,7 @@
     "react-dom": "19.2.6",
     "react-hook-form": "7.71.1",
     "sharp": "0.34.2",
-    "tailwind-merge": "^3.4.0",
-    "@payloadcms/db-sqlite": "3.89.0"
+    "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",

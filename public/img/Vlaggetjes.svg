@@ -1,0 +1,105 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="1200"
+  height="80"
+  viewBox="0 0 1200 80"
+  aria-hidden="true"
+>
+  <defs>
+
+    <!--
+      Alles boven deze curve wordt weggeknipt.
+      Hierdoor vormt het touw automatisch de bovenkant
+      van ieder vlaggetje.
+    -->
+    <clipPath id="onder-touw" clipPathUnits="userSpaceOnUse">
+      <path
+        d="
+          M0 8
+          Q300 2 600 8
+          Q900 14 1200 8
+          L1200 80
+          L0 80
+          Z
+        "
+      />
+    </clipPath>
+
+  </defs>
+
+  <!--
+    Vlaggetjes worden bewust veel te groot naar boven getekend.
+    Alles boven het touw wordt daarna weggeknipt.
+  -->
+  <g clip-path="url(#onder-touw)">
+
+    <path d="M10.76 -18 L59.24 -18 L35 42 Z"
+      fill="#E6007E" opacity="0.85"/>
+
+    <path d="M76.45 -18 L123.55 -18 L100 43 Z"
+      fill="#9B1B5A" opacity="0.85"/>
+
+    <path d="M141.92 -18 L188.08 -18 L165 44 Z"
+      fill="#8CB808" opacity="0.85"/>
+
+    <path d="M207.20 -18 L252.80 -18 L230 45 Z"
+      fill="#2B9AC8" opacity="0.85"/>
+
+    <path d="M272.30 -18 L317.70 -18 L295 46 Z"
+      fill="#E6007E" opacity="0.85"/>
+
+    <path d="M337.22 -18 L382.78 -18 L360 47 Z"
+      fill="#9B1B5A" opacity="0.85"/>
+
+    <path d="M401.97 -18 L448.03 -18 L425 48 Z"
+      fill="#8CB808" opacity="0.85"/>
+
+    <path d="M466.53 -18 L513.47 -18 L490 48 Z"
+      fill="#2B9AC8" opacity="0.85"/>
+
+    <path d="M530.88 -18 L579.12 -18 L555 49 Z"
+      fill="#E6007E" opacity="0.85"/>
+
+    <path d="M595.01 -18 L644.99 -18 L620 49 Z"
+      fill="#9B1B5A" opacity="0.85"/>
+
+    <path d="M659.19 -18 L710.81 -18 L685 48 Z"
+      fill="#8CB808" opacity="0.85"/>
+
+    <path d="M723.54 -18 L776.46 -18 L750 48 Z"
+      fill="#2B9AC8" opacity="0.85"/>
+
+    <path d="M788.11 -18 L841.89 -18 L815 47 Z"
+      fill="#E6007E" opacity="0.85"/>
+
+    <path d="M852.91 -18 L907.09 -18 L880 46 Z"
+      fill="#9B1B5A" opacity="0.85"/>
+
+    <path d="M917.96 -18 L972.04 -18 L945 45 Z"
+      fill="#8CB808" opacity="0.85"/>
+
+    <path d="M983.25 -18 L1036.75 -18 L1010 44 Z"
+      fill="#2B9AC8" opacity="0.85"/>
+
+    <path d="M1048.77 -18 L1101.23 -18 L1075 43 Z"
+      fill="#E6007E" opacity="0.85"/>
+
+    <path d="M1114.48 -18 L1165.52 -18 L1140 42 Z"
+      fill="#9B1B5A" opacity="0.85"/>
+
+  </g>
+
+  <!-- Touw komt bovenop de vlaggetjes -->
+  <path
+    d="
+      M0 8
+      Q300 2 600 8
+      Q900 14 1200 8
+    "
+    fill="none"
+    stroke="#9B1B5A"
+    stroke-width="2"
+    opacity="0.4"
+  />
+
+</svg>

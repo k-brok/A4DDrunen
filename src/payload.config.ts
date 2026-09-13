@@ -1,4 +1,6 @@
 import { sqliteAdapter } from '@payloadcms/db-sqlite'
+import { postgresAdapter } from '@payloadcms/db-postgres'
+
 import sharp from 'sharp'
 import path from 'path'
 import { buildConfig, PayloadRequest } from 'payload'
@@ -11,14 +13,47 @@ import { Posts } from './collections/Posts'
 import { Users } from './collections/Users'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
+import { SiteSettings } from './SiteSettings/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
+import { Contactgegevens } from './collections/Contactgegevens'
+import { Sponsors } from './collections/Sponsors'
+import { Edities } from './collections/Edities'
+import { Routes } from './collections/Routes'
+import { Faqs } from './collections/Faqs'
+import { Dagen } from './collections/Dagen'
+import { Klanten } from './collections/Klanten'
+import { PrijsOpties } from './collections/PrijsOpties'
+import { Inschrijvingen } from './collections/Inschrijvingen'
+import { Deelnemers } from './collections/Deelnemers'
+
+import { graphAdapter } from './email/graphAdapter'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+const databaseAdapter =
+  process.env.DATABASE_TYPE === 'postgres'
+    ? postgresAdapter({
+        pool: {
+          connectionString: process.env.DATABASE_URL,
+        },
+      })
+    : sqliteAdapter({
+        client: {
+          url: process.env.DATABASE_URL || '',
+        },
+      })
+
 export default buildConfig({
+  email: graphAdapter({
+    tenantId: process.env.MS_GRAPH_TENANT_ID || '',
+    clientId: process.env.MS_GRAPH_CLIENT_ID || '',
+    clientSecret: process.env.MS_GRAPH_CLIENT_SECRET || '',
+    senderEmail: process.env.MS_GRAPH_SENDER_EMAIL || '',
+    defaultFromName: 'Avondvierdaagse Drunen',
+  }),
   admin: {
     components: {
       // The `BeforeLogin` component renders a message that you see while logging into your admin panel.
@@ -27,7 +62,9 @@ export default buildConfig({
       // The `BeforeDashboard` component renders the 'welcome' block that you see after logging into your admin panel.
       // Feel free to delete this at any time. Simply remove the line below.
       beforeDashboard: ['@/components/BeforeDashboard'],
+      actions: ['@/components/EditionSelector#EditionSelector'],
     },
+    dateFormat: 'dd-MM-yyyy HH:mm',
     importMap: {
       baseDir: path.resolve(dirname),
     },
@@ -56,15 +93,26 @@ export default buildConfig({
     },
   },
   // This config helps us configure global or default features that the other editors can inherit
-  editor: defaultLexical,
-  db: sqliteAdapter({
-    client: {
-      url: process.env.DATABASE_URL || '',
-    },
-  }),
-  collections: [Pages, Posts, Media, Categories, Users],
+  db: databaseAdapter,
+  collections: [
+    Pages,
+    Posts,
+    Media,
+    Categories,
+    Users,
+    Contactgegevens,
+    Sponsors,
+    Edities,
+    Routes,
+    Faqs,
+    Dagen,
+    Klanten,
+    PrijsOpties,
+    Inschrijvingen,
+    Deelnemers,
+  ],
   cors: [getServerSideURL()].filter(Boolean),
-  globals: [Header, Footer],
+  globals: [Header, Footer, SiteSettings],
   plugins,
   secret: process.env.PAYLOAD_SECRET,
   sharp,

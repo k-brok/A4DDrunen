@@ -57,6 +57,7 @@ export const plugins: Plugin[] = [
   formBuilderPlugin({
     fields: {
       payment: false,
+      message: false,
     },
     formOverrides: {
       fields: ({ defaultFields }) => {
@@ -75,6 +76,30 @@ export const plugins: Plugin[] = [
               }),
             }
           }
+
+          if ('name' in field && field.name === 'emails' && field.type === 'array') {
+            return {
+              ...field,
+              fields: field.fields.map((emailField) => {
+                if ('name' in emailField && emailField.name === 'message') {
+                  return {
+                    ...emailField,
+                    editor: lexicalEditor({
+                      features: ({ rootFeatures }) => {
+                        return [
+                          ...rootFeatures,
+                          FixedToolbarFeature(),
+                          HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
+                        ]
+                      },
+                    }),
+                  }
+                }
+                return emailField
+              }),
+            }
+          }
+
           return field
         })
       },

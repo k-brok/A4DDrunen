@@ -64,6 +64,7 @@ export type SupportedTimezones =
 export interface Config {
   auth: {
     users: UserAuthOperations;
+    klanten: KlantenAuthOperations;
   };
   blocks: {};
   collections: {
@@ -72,6 +73,16 @@ export interface Config {
     media: Media;
     categories: Category;
     users: User;
+    contactgegevens: Contactgegeven;
+    sponsors: Sponsor;
+    edities: Edity;
+    routes: Route;
+    faqs: Faq;
+    dagen: Dagen;
+    klanten: Klanten;
+    'prijs-opties': PrijsOpty;
+    inschrijvingen: Inschrijvingen;
+    deelnemers: Deelnemer;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -94,6 +105,16 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    contactgegevens: ContactgegevensSelect<false> | ContactgegevensSelect<true>;
+    sponsors: SponsorsSelect<false> | SponsorsSelect<true>;
+    edities: EditiesSelect<false> | EditiesSelect<true>;
+    routes: RoutesSelect<false> | RoutesSelect<true>;
+    faqs: FaqsSelect<false> | FaqsSelect<true>;
+    dagen: DagenSelect<false> | DagenSelect<true>;
+    klanten: KlantenSelect<false> | KlantenSelect<true>;
+    'prijs-opties': PrijsOptiesSelect<false> | PrijsOptiesSelect<true>;
+    inschrijvingen: InschrijvingenSelect<false> | InschrijvingenSelect<true>;
+    deelnemers: DeelnemersSelect<false> | DeelnemersSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -106,22 +127,24 @@ export interface Config {
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
-    defaultIDType: string;
+    defaultIDType: number;
   };
   fallbackLocale: null;
   globals: {
     header: Header;
     footer: Footer;
+    'site-settings': SiteSetting;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
   };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
   };
-  user: User;
+  user: User | Klanten;
   jobs: {
     tasks: {
       schedulePublish: TaskSchedulePublish;
@@ -151,12 +174,30 @@ export interface UserAuthOperations {
     password: string;
   };
 }
+export interface KlantenAuthOperations {
+  forgotPassword: {
+    email: string;
+    password: string;
+  };
+  login: {
+    email: string;
+    password: string;
+  };
+  registerFirstUser: {
+    email: string;
+    password: string;
+  };
+  unlock: {
+    email: string;
+    password: string;
+  };
+}
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "pages".
  */
 export interface Page {
-  id: string;
+  id: number;
   title: string;
   hero: {
     type: 'none' | 'highImpact' | 'mediumImpact' | 'lowImpact';
@@ -183,11 +224,11 @@ export interface Page {
             reference?:
               | ({
                   relationTo: 'pages';
-                  value: string | Page;
+                  value: number | Page;
                 } | null)
               | ({
                   relationTo: 'posts';
-                  value: string | Post;
+                  value: number | Post;
                 } | null);
             url?: string | null;
             label: string;
@@ -199,15 +240,32 @@ export interface Page {
           id?: string | null;
         }[]
       | null;
-    media?: (string | null) | Media;
+    media?: (number | null) | Media;
   };
-  layout: (CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock)[];
+  layout: (
+    | CallToActionBlock
+    | ContentBlock
+    | MediaBlock
+    | ArchiveBlock
+    | FormBlock
+    | BadgeStampBlock
+    | IntroHeadingBlock
+    | ButtonGroupBlock
+    | SponsorGroupBlock
+    | CountdownBlock
+    | WaveSectionBlock
+    | RouteGroupBlock
+    | FaqGroupBlock
+    | FlagDividerBlock
+    | RouteDetailGroupBlock
+    | RegistrationFormBlock
+  )[];
   meta?: {
     title?: string | null;
     /**
      * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
      */
-    image?: (string | null) | Media;
+    image?: (number | null) | Media;
     description?: string | null;
   };
   publishedAt?: string | null;
@@ -225,9 +283,9 @@ export interface Page {
  * via the `definition` "posts".
  */
 export interface Post {
-  id: string;
+  id: number;
   title: string;
-  heroImage?: (string | null) | Media;
+  heroImage?: (number | null) | Media;
   content: {
     root: {
       type: string;
@@ -243,18 +301,18 @@ export interface Post {
     };
     [k: string]: unknown;
   };
-  relatedPosts?: (string | Post)[] | null;
-  categories?: (string | Category)[] | null;
+  relatedPosts?: (number | Post)[] | null;
+  categories?: (number | Category)[] | null;
   meta?: {
     title?: string | null;
     /**
      * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
      */
-    image?: (string | null) | Media;
+    image?: (number | null) | Media;
     description?: string | null;
   };
   publishedAt?: string | null;
-  authors?: (string | User)[] | null;
+  authors?: (number | User)[] | null;
   populatedAuthors?:
     | {
         id?: string | null;
@@ -275,7 +333,7 @@ export interface Post {
  * via the `definition` "media".
  */
 export interface Media {
-  id: string;
+  id: number;
   alt?: string | null;
   caption?: {
     root: {
@@ -292,7 +350,7 @@ export interface Media {
     };
     [k: string]: unknown;
   } | null;
-  folder?: (string | null) | FolderInterface;
+  folder?: (number | null) | FolderInterface;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -368,18 +426,18 @@ export interface Media {
  * via the `definition` "payload-folders".
  */
 export interface FolderInterface {
-  id: string;
+  id: number;
   name: string;
-  folder?: (string | null) | FolderInterface;
+  folder?: (number | null) | FolderInterface;
   documentsAndFolders?: {
     docs?: (
       | {
           relationTo?: 'payload-folders';
-          value: string | FolderInterface;
+          value: number | FolderInterface;
         }
       | {
           relationTo?: 'media';
-          value: string | Media;
+          value: number | Media;
         }
     )[];
     hasNextPage?: boolean;
@@ -394,17 +452,17 @@ export interface FolderInterface {
  * via the `definition` "categories".
  */
 export interface Category {
-  id: string;
+  id: number;
   title: string;
   /**
    * When enabled, the slug will auto-generate from the title field on save and autosave.
    */
   generateSlug?: boolean | null;
   slug: string;
-  parent?: (string | null) | Category;
+  parent?: (number | null) | Category;
   breadcrumbs?:
     | {
-        doc?: (string | null) | Category;
+        doc?: (number | null) | Category;
         url?: string | null;
         label?: string | null;
         id?: string | null;
@@ -418,8 +476,9 @@ export interface Category {
  * via the `definition` "users".
  */
 export interface User {
-  id: string;
+  id: number;
   name?: string | null;
+  role: 'editor' | 'admin';
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -467,11 +526,11 @@ export interface CallToActionBlock {
           reference?:
             | ({
                 relationTo: 'pages';
-                value: string | Page;
+                value: number | Page;
               } | null)
             | ({
                 relationTo: 'posts';
-                value: string | Post;
+                value: number | Post;
               } | null);
           url?: string | null;
           label: string;
@@ -517,11 +576,11 @@ export interface ContentBlock {
           reference?:
             | ({
                 relationTo: 'pages';
-                value: string | Page;
+                value: number | Page;
               } | null)
             | ({
                 relationTo: 'posts';
-                value: string | Post;
+                value: number | Post;
               } | null);
           url?: string | null;
           label: string;
@@ -542,7 +601,7 @@ export interface ContentBlock {
  * via the `definition` "MediaBlock".
  */
 export interface MediaBlock {
-  media: string | Media;
+  media: number | Media;
   id?: string | null;
   blockName?: string | null;
   blockType: 'mediaBlock';
@@ -569,12 +628,12 @@ export interface ArchiveBlock {
   } | null;
   populateBy?: ('collection' | 'selection') | null;
   relationTo?: 'posts' | null;
-  categories?: (string | Category)[] | null;
+  categories?: (number | Category)[] | null;
   limit?: number | null;
   selectedDocs?:
     | {
         relationTo: 'posts';
-        value: string | Post;
+        value: number | Post;
       }[]
     | null;
   id?: string | null;
@@ -586,7 +645,7 @@ export interface ArchiveBlock {
  * via the `definition` "FormBlock".
  */
 export interface FormBlock {
-  form: string | Form;
+  form: number | Form;
   enableIntro?: boolean | null;
   introContent?: {
     root: {
@@ -612,7 +671,7 @@ export interface FormBlock {
  * via the `definition` "forms".
  */
 export interface Form {
-  id: string;
+  id: number;
   title: string;
   fields?:
     | (
@@ -643,26 +702,6 @@ export interface Form {
             id?: string | null;
             blockName?: string | null;
             blockType: 'email';
-          }
-        | {
-            message?: {
-              root: {
-                type: string;
-                children: {
-                  type: any;
-                  version: number;
-                  [k: string]: unknown;
-                }[];
-                direction: ('ltr' | 'rtl') | null;
-                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-                indent: number;
-                version: number;
-              };
-              [k: string]: unknown;
-            } | null;
-            id?: string | null;
-            blockName?: string | null;
-            blockType: 'message';
           }
         | {
             name: string;
@@ -724,9 +763,6 @@ export interface Form {
       )[]
     | null;
   submitButtonLabel?: string | null;
-  /**
-   * Choose whether to display an on-page message or redirect to a different page after they submit the form.
-   */
   confirmationType?: ('message' | 'redirect') | null;
   confirmationMessage?: {
     root: {
@@ -746,9 +782,6 @@ export interface Form {
   redirect?: {
     url: string;
   };
-  /**
-   * Send custom emails when the form submits. Use comma separated lists to send the same email to multiple recipients. To reference a value from this form, wrap that field's name with double curly brackets, i.e. {{firstName}}. You can use a wildcard {{*}} to output all data and {{*:table}} to format it as an HTML table in the email.
-   */
   emails?:
     | {
         emailTo?: string | null;
@@ -757,9 +790,6 @@ export interface Form {
         replyTo?: string | null;
         emailFrom?: string | null;
         subject: string;
-        /**
-         * Enter the message that should be sent in this email.
-         */
         message?: {
           root: {
             type: string;
@@ -783,10 +813,467 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BadgeStampBlock".
+ */
+export interface BadgeStampBlock {
+  /**
+   * Bijvoorbeeld: "57e Editie • 2 t/m 5 juni 2026"
+   */
+  text: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'badgeStamp';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "IntroHeadingBlock".
+ */
+export interface IntroHeadingBlock {
+  /**
+   * Bijvoorbeeld: "Héél Drunen"
+   */
+  heading?: string | null;
+  /**
+   * Bijvoorbeeld: "wandelt weer!"
+   */
+  accentLine?: string | null;
+  /**
+   * Optionele beschrijvende tekst eronder
+   */
+  intro?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'introHeading';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ButtonGroupBlock".
+ */
+export interface ButtonGroupBlock {
+  buttons?:
+    | {
+        link: {
+          type?: ('reference' | 'custom') | null;
+          newTab?: boolean | null;
+          reference?:
+            | ({
+                relationTo: 'pages';
+                value: number | Page;
+              } | null)
+            | ({
+                relationTo: 'posts';
+                value: number | Post;
+              } | null);
+          url?: string | null;
+          label: string;
+        };
+        size?: ('sm' | 'default' | 'lg' | 'xl') | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'buttonGroup';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SponsorGroupBlock".
+ */
+export interface SponsorGroupBlock {
+  /**
+   * Aantal sponsoren dat maximaal wordt getoond.
+   */
+  max: 'all' | '1' | '2' | '3' | '4' | '6' | '8';
+  /**
+   * Grootte van alle sponsor-tegels.
+   */
+  size: 'small' | 'medium' | 'large';
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'sponsorGroup';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CountdownBlock".
+ */
+export interface CountdownBlock {
+  /**
+   * De datum/tijd waar naartoe wordt afgeteld
+   */
+  targetDate: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'countdown';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "WaveSectionBlock".
+ */
+export interface WaveSectionBlock {
+  color: 'success' | 'primary' | 'primarylight' | 'secondary' | 'accent';
+  edge: 'wave' | 'straight';
+  content?:
+    | (
+        | CardColumnsBlock
+        | IntroHeadingBlock
+        | ButtonGroupBlock
+        | FaqGroupBlock
+        | FlagDividerBlock
+        | RouteDetailGroupBlock
+      )[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'waveSection';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CardColumnsBlock".
+ */
+export interface CardColumnsBlock {
+  cards?:
+    | {
+        iconType?: ('emoji' | 'media') | null;
+        /**
+         * Bijvoorbeeld: 🎪
+         */
+        emoji?: string | null;
+        icon?: (number | null) | Media;
+        title: string;
+        description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'cardColumns';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FaqGroupBlock".
+ */
+export interface FaqGroupBlock {
+  /**
+   * Aantal vragen dat maximaal wordt getoond, op volgorde van het order-veld.
+   */
+  max: 'all' | '1' | '2' | '3' | '4' | '6' | '8';
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'faqGroup';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FlagDividerBlock".
+ */
+export interface FlagDividerBlock {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'flagDivider';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RouteDetailGroupBlock".
+ */
+export interface RouteDetailGroupBlock {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'routeDetailGroup';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RouteGroupBlock".
+ */
+export interface RouteGroupBlock {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'routeGroup';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RegistrationFormBlock".
+ */
+export interface RegistrationFormBlock {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'registrationForm';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contactgegevens".
+ */
+export interface Contactgegeven {
+  id: number;
+  displayName?: string | null;
+  /**
+   * Optioneel: koppel dit contact aan een gebruiker.
+   */
+  user?: (number | null) | User;
+  voornaam: string;
+  achternaam: string;
+  organisatie?: string | null;
+  email?: string | null;
+  telefoon?: string | null;
+  adres?: {
+    straat?: string | null;
+    huisnummer?: string | null;
+    toevoeging?: string | null;
+    postcode?: string | null;
+    plaats?: string | null;
+    land?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sponsors".
+ */
+export interface Sponsor {
+  id: number;
+  name: string;
+  logo: number | Media;
+  url: string;
+  /**
+   * Aantal keer dat deze sponsor daadwerkelijk is weergegeven.
+   */
+  displayCount: number;
+  /**
+   * Aantal keer dat op deze sponsor is geklikt.
+   */
+  clickCount: number;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "edities".
+ */
+export interface Edity {
+  id: number;
+  /**
+   * Bijvoorbeeld: "57e editie 2026" — deze tekst verschijnt ook onderaan de routekaarten
+   */
+  title: string;
+  /**
+   * Bijvoorbeeld: 2026
+   */
+  year: number;
+  /**
+   * Basisprijs per deelnemer in euro's, bijvoorbeeld 5.00
+   */
+  pricePerParticipant: number;
+  startDate: string;
+  endDate: string;
+  /**
+   * Dit is de huidige/actieve editie
+   */
+  active?: boolean | null;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "routes".
+ */
+export interface Route {
+  id: number;
+  /**
+   * Bijvoorbeeld: "Ontdek-route"
+   */
+  title: string;
+  displayLabel?: string | null;
+  edition: number | Edity;
+  /**
+   * Afstand in kilometers, bijvoorbeeld 7.5
+   */
+  distance: number;
+  description: string;
+  iconType?: ('emoji' | 'media') | null;
+  /**
+   * Bijvoorbeeld: 🦆
+   */
+  emoji?: string | null;
+  icon?: (number | null) | Media;
+  /**
+   * Korte pluspunten, bijvoorbeeld "Geschikt voor buggy's en rolstoelen"
+   */
+  highlights?:
+    | {
+        text?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * When enabled, the slug will auto-generate from the title field on save and autosave.
+   */
+  generateSlug?: boolean | null;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faqs".
+ */
+export interface Faq {
+  id: number;
+  /**
+   * Bijvoorbeeld: "Vanaf wanneer kan ik me inschrijven?"
+   */
+  question: string;
+  answer: string;
+  /**
+   * Bepaalt de volgorde (laag = bovenaan)
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "dagen".
+ */
+export interface Dagen {
+  id: number;
+  edition: number | Edity;
+  date: string;
+  /**
+   * Automatisch ingevuld op basis van de datum (bv. "Dinsdag 2 juni 2026"), tenzij je hier iets eigens invult.
+   */
+  label?: string | null;
+  startTime?: string | null;
+  endTime?: string | null;
+  /**
+   * Bijvoorbeeld: "Sporthal De Kubus"
+   */
+  startLocation?: string | null;
+  /**
+   * Alleen invullen als een route op deze dag een afwijkende tijd of locatie heeft. Leeg = gebruik de standaardtijd/locatie hierboven.
+   */
+  routeOverrides?:
+    | {
+        route: number | Route;
+        startTime?: string | null;
+        endTime?: string | null;
+        startLocation?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "klanten".
+ */
+export interface Klanten {
+  id: number;
+  name: string;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+  collection: 'klanten';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "prijs-opties".
+ */
+export interface PrijsOpty {
+  id: number;
+  edition: number | Edity;
+  /**
+   * Bijvoorbeeld: "T-shirt"
+   */
+  label: string;
+  price: number;
+  /**
+   * Vraag bij deze optie om een extra invoerveld (bv. medaillenummer)
+   */
+  requiresInput?: boolean | null;
+  /**
+   * Label van het invoerveld, bijvoorbeeld "Medaillenummer"
+   */
+  inputLabel?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "inschrijvingen".
+ */
+export interface Inschrijvingen {
+  id: number;
+  edition: number | Edity;
+  /**
+   * Automatisch gekoppeld op basis van het e-mailadres
+   */
+  account?: (number | null) | Klanten;
+  contactName: string;
+  contactEmail: string;
+  contactPhone?: string | null;
+  status: 'pending' | 'paid' | 'cancelled';
+  /**
+   * Berekend uit deelnemers + gekozen opties
+   */
+  totalAmount?: number | null;
+  molliePaymentId?: string | null;
+  confirmationEmailSent?: boolean | null;
+  newAccountCreated?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "deelnemers".
+ */
+export interface Deelnemer {
+  id: number;
+  registration: number | Inschrijvingen;
+  name: string;
+  birthDate: string;
+  route: number | Route;
+  selectedOptions?:
+    | {
+        option: number | PrijsOpty;
+        /**
+         * Bevroren prijs op moment van inschrijving
+         */
+        priceAtRegistration: number;
+        /**
+         * Extra ingevoerde waarde, bijvoorbeeld medaillenummer
+         */
+        inputValue?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
-  id: string;
+  id: number;
   /**
    * You will need to rebuild the website when changing this field.
    */
@@ -796,11 +1283,11 @@ export interface Redirect {
     reference?:
       | ({
           relationTo: 'pages';
-          value: string | Page;
+          value: number | Page;
         } | null)
       | ({
           relationTo: 'posts';
-          value: string | Post;
+          value: number | Post;
         } | null);
     url?: string | null;
   };
@@ -812,8 +1299,8 @@ export interface Redirect {
  * via the `definition` "form-submissions".
  */
 export interface FormSubmission {
-  id: string;
-  form: string | Form;
+  id: number;
+  form: number | Form;
   submissionData?:
     | {
         field: string;
@@ -831,18 +1318,18 @@ export interface FormSubmission {
  * via the `definition` "search".
  */
 export interface Search {
-  id: string;
+  id: number;
   title?: string | null;
   priority?: number | null;
   doc: {
     relationTo: 'posts';
-    value: string | Post;
+    value: number | Post;
   };
   slug?: string | null;
   meta?: {
     title?: string | null;
     description?: string | null;
-    image?: (string | null) | Media;
+    image?: (number | null) | Media;
   };
   categories?:
     | {
@@ -860,7 +1347,7 @@ export interface Search {
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
-  id: string;
+  id: number;
   key: string;
   data:
     | {
@@ -877,7 +1364,7 @@ export interface PayloadKv {
  * via the `definition` "payload-jobs".
  */
 export interface PayloadJob {
-  id: string;
+  id: number;
   /**
    * Input data provided to the job
    */
@@ -969,53 +1456,98 @@ export interface PayloadJob {
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
-  id: string;
+  id: number;
   document?:
     | ({
         relationTo: 'pages';
-        value: string | Page;
+        value: number | Page;
       } | null)
     | ({
         relationTo: 'posts';
-        value: string | Post;
+        value: number | Post;
       } | null)
     | ({
         relationTo: 'media';
-        value: string | Media;
+        value: number | Media;
       } | null)
     | ({
         relationTo: 'categories';
-        value: string | Category;
+        value: number | Category;
       } | null)
     | ({
         relationTo: 'users';
-        value: string | User;
+        value: number | User;
+      } | null)
+    | ({
+        relationTo: 'contactgegevens';
+        value: number | Contactgegeven;
+      } | null)
+    | ({
+        relationTo: 'sponsors';
+        value: number | Sponsor;
+      } | null)
+    | ({
+        relationTo: 'edities';
+        value: number | Edity;
+      } | null)
+    | ({
+        relationTo: 'routes';
+        value: number | Route;
+      } | null)
+    | ({
+        relationTo: 'faqs';
+        value: number | Faq;
+      } | null)
+    | ({
+        relationTo: 'dagen';
+        value: number | Dagen;
+      } | null)
+    | ({
+        relationTo: 'klanten';
+        value: number | Klanten;
+      } | null)
+    | ({
+        relationTo: 'prijs-opties';
+        value: number | PrijsOpty;
+      } | null)
+    | ({
+        relationTo: 'inschrijvingen';
+        value: number | Inschrijvingen;
+      } | null)
+    | ({
+        relationTo: 'deelnemers';
+        value: number | Deelnemer;
       } | null)
     | ({
         relationTo: 'redirects';
-        value: string | Redirect;
+        value: number | Redirect;
       } | null)
     | ({
         relationTo: 'forms';
-        value: string | Form;
+        value: number | Form;
       } | null)
     | ({
         relationTo: 'form-submissions';
-        value: string | FormSubmission;
+        value: number | FormSubmission;
       } | null)
     | ({
         relationTo: 'search';
-        value: string | Search;
+        value: number | Search;
       } | null)
     | ({
         relationTo: 'payload-folders';
-        value: string | FolderInterface;
+        value: number | FolderInterface;
       } | null);
   globalSlug?: string | null;
-  user: {
-    relationTo: 'users';
-    value: string | User;
-  };
+  user:
+    | {
+        relationTo: 'users';
+        value: number | User;
+      }
+    | {
+        relationTo: 'klanten';
+        value: number | Klanten;
+      };
   updatedAt: string;
   createdAt: string;
 }
@@ -1024,11 +1556,16 @@ export interface PayloadLockedDocument {
  * via the `definition` "payload-preferences".
  */
 export interface PayloadPreference {
-  id: string;
-  user: {
-    relationTo: 'users';
-    value: string | User;
-  };
+  id: number;
+  user:
+    | {
+        relationTo: 'users';
+        value: number | User;
+      }
+    | {
+        relationTo: 'klanten';
+        value: number | Klanten;
+      };
   key?: string | null;
   value?:
     | {
@@ -1047,7 +1584,7 @@ export interface PayloadPreference {
  * via the `definition` "payload-migrations".
  */
 export interface PayloadMigration {
-  id: string;
+  id: number;
   name?: string | null;
   batch?: number | null;
   updatedAt: string;
@@ -1089,6 +1626,17 @@ export interface PagesSelect<T extends boolean = true> {
         mediaBlock?: T | MediaBlockSelect<T>;
         archive?: T | ArchiveBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
+        badgeStamp?: T | BadgeStampBlockSelect<T>;
+        introHeading?: T | IntroHeadingBlockSelect<T>;
+        buttonGroup?: T | ButtonGroupBlockSelect<T>;
+        sponsorGroup?: T | SponsorGroupBlockSelect<T>;
+        countdown?: T | CountdownBlockSelect<T>;
+        waveSection?: T | WaveSectionBlockSelect<T>;
+        routeGroup?: T | RouteGroupBlockSelect<T>;
+        faqGroup?: T | FaqGroupBlockSelect<T>;
+        flagDivider?: T | FlagDividerBlockSelect<T>;
+        routeDetailGroup?: T | RouteDetailGroupBlockSelect<T>;
+        registrationForm?: T | RegistrationFormBlockSelect<T>;
       };
   meta?:
     | T
@@ -1185,6 +1733,147 @@ export interface FormBlockSelect<T extends boolean = true> {
   form?: T;
   enableIntro?: T;
   introContent?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BadgeStampBlock_select".
+ */
+export interface BadgeStampBlockSelect<T extends boolean = true> {
+  text?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "IntroHeadingBlock_select".
+ */
+export interface IntroHeadingBlockSelect<T extends boolean = true> {
+  heading?: T;
+  accentLine?: T;
+  intro?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "ButtonGroupBlock_select".
+ */
+export interface ButtonGroupBlockSelect<T extends boolean = true> {
+  buttons?:
+    | T
+    | {
+        link?:
+          | T
+          | {
+              type?: T;
+              newTab?: T;
+              reference?: T;
+              url?: T;
+              label?: T;
+            };
+        size?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "SponsorGroupBlock_select".
+ */
+export interface SponsorGroupBlockSelect<T extends boolean = true> {
+  max?: T;
+  size?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CountdownBlock_select".
+ */
+export interface CountdownBlockSelect<T extends boolean = true> {
+  targetDate?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "WaveSectionBlock_select".
+ */
+export interface WaveSectionBlockSelect<T extends boolean = true> {
+  color?: T;
+  edge?: T;
+  content?:
+    | T
+    | {
+        cardColumns?: T | CardColumnsBlockSelect<T>;
+        introHeading?: T | IntroHeadingBlockSelect<T>;
+        buttonGroup?: T | ButtonGroupBlockSelect<T>;
+        faqGroup?: T | FaqGroupBlockSelect<T>;
+        flagDivider?: T | FlagDividerBlockSelect<T>;
+        routeDetailGroup?: T | RouteDetailGroupBlockSelect<T>;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CardColumnsBlock_select".
+ */
+export interface CardColumnsBlockSelect<T extends boolean = true> {
+  cards?:
+    | T
+    | {
+        iconType?: T;
+        emoji?: T;
+        icon?: T;
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FaqGroupBlock_select".
+ */
+export interface FaqGroupBlockSelect<T extends boolean = true> {
+  max?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FlagDividerBlock_select".
+ */
+export interface FlagDividerBlockSelect<T extends boolean = true> {
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RouteDetailGroupBlock_select".
+ */
+export interface RouteDetailGroupBlockSelect<T extends boolean = true> {
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RouteGroupBlock_select".
+ */
+export interface RouteGroupBlockSelect<T extends boolean = true> {
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RegistrationFormBlock_select".
+ */
+export interface RegistrationFormBlockSelect<T extends boolean = true> {
   id?: T;
   blockName?: T;
 }
@@ -1339,6 +2028,7 @@ export interface CategoriesSelect<T extends boolean = true> {
  */
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
+  role?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -1355,6 +2045,192 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contactgegevens_select".
+ */
+export interface ContactgegevensSelect<T extends boolean = true> {
+  displayName?: T;
+  user?: T;
+  voornaam?: T;
+  achternaam?: T;
+  organisatie?: T;
+  email?: T;
+  telefoon?: T;
+  adres?:
+    | T
+    | {
+        straat?: T;
+        huisnummer?: T;
+        toevoeging?: T;
+        postcode?: T;
+        plaats?: T;
+        land?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sponsors_select".
+ */
+export interface SponsorsSelect<T extends boolean = true> {
+  name?: T;
+  logo?: T;
+  url?: T;
+  displayCount?: T;
+  clickCount?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "edities_select".
+ */
+export interface EditiesSelect<T extends boolean = true> {
+  title?: T;
+  year?: T;
+  pricePerParticipant?: T;
+  startDate?: T;
+  endDate?: T;
+  active?: T;
+  generateSlug?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "routes_select".
+ */
+export interface RoutesSelect<T extends boolean = true> {
+  title?: T;
+  displayLabel?: T;
+  edition?: T;
+  distance?: T;
+  description?: T;
+  iconType?: T;
+  emoji?: T;
+  icon?: T;
+  highlights?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  generateSlug?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "faqs_select".
+ */
+export interface FaqsSelect<T extends boolean = true> {
+  question?: T;
+  answer?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "dagen_select".
+ */
+export interface DagenSelect<T extends boolean = true> {
+  edition?: T;
+  date?: T;
+  label?: T;
+  startTime?: T;
+  endTime?: T;
+  startLocation?: T;
+  routeOverrides?:
+    | T
+    | {
+        route?: T;
+        startTime?: T;
+        endTime?: T;
+        startLocation?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "klanten_select".
+ */
+export interface KlantenSelect<T extends boolean = true> {
+  name?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "prijs-opties_select".
+ */
+export interface PrijsOptiesSelect<T extends boolean = true> {
+  edition?: T;
+  label?: T;
+  price?: T;
+  requiresInput?: T;
+  inputLabel?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "inschrijvingen_select".
+ */
+export interface InschrijvingenSelect<T extends boolean = true> {
+  edition?: T;
+  account?: T;
+  contactName?: T;
+  contactEmail?: T;
+  contactPhone?: T;
+  status?: T;
+  totalAmount?: T;
+  molliePaymentId?: T;
+  confirmationEmailSent?: T;
+  newAccountCreated?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "deelnemers_select".
+ */
+export interface DeelnemersSelect<T extends boolean = true> {
+  registration?: T;
+  name?: T;
+  birthDate?: T;
+  route?: T;
+  selectedOptions?:
+    | T
+    | {
+        option?: T;
+        priceAtRegistration?: T;
+        inputValue?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1409,13 +2285,6 @@ export interface FormsSelect<T extends boolean = true> {
               label?: T;
               width?: T;
               required?: T;
-              id?: T;
-              blockName?: T;
-            };
-        message?:
-          | T
-          | {
-              message?: T;
               id?: T;
               blockName?: T;
             };
@@ -1636,7 +2505,7 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  * via the `definition` "header".
  */
 export interface Header {
-  id: string;
+  id: number;
   navItems?:
     | {
         link: {
@@ -1645,11 +2514,11 @@ export interface Header {
           reference?:
             | ({
                 relationTo: 'pages';
-                value: string | Page;
+                value: number | Page;
               } | null)
             | ({
                 relationTo: 'posts';
-                value: string | Post;
+                value: number | Post;
               } | null);
           url?: string | null;
           label: string;
@@ -1665,7 +2534,7 @@ export interface Header {
  * via the `definition` "footer".
  */
 export interface Footer {
-  id: string;
+  id: number;
   navItems?:
     | {
         link: {
@@ -1674,11 +2543,11 @@ export interface Footer {
           reference?:
             | ({
                 relationTo: 'pages';
-                value: string | Page;
+                value: number | Page;
               } | null)
             | ({
                 relationTo: 'posts';
-                value: string | Post;
+                value: number | Post;
               } | null);
           url?: string | null;
           label: string;
@@ -1686,6 +2555,37 @@ export interface Footer {
         id?: string | null;
       }[]
     | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: number;
+  /**
+   * Officiële naam, bv. "Stichting Avondvierdaagse Drunen"
+   */
+  organisatienaam: string;
+  /**
+   * Naam naast het logo, bv. "Avond4daagse Drunen". Valt terug op organisatienaam indien leeg.
+   */
+  weergavenaam?: string | null;
+  /**
+   * Korte introtekst in de footer
+   */
+  beschrijving?: string | null;
+  contact?: {
+    adres?: {
+      straat?: string | null;
+      postcode?: string | null;
+      plaats?: string | null;
+    };
+    telefoon?: string | null;
+    email?: string | null;
+    kvkNummer?: string | null;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1737,6 +2637,32 @@ export interface FooterSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  organisatienaam?: T;
+  weergavenaam?: T;
+  beschrijving?: T;
+  contact?:
+    | T
+    | {
+        adres?:
+          | T
+          | {
+              straat?: T;
+              postcode?: T;
+              plaats?: T;
+            };
+        telefoon?: T;
+        email?: T;
+        kvkNummer?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "collections_widget".
  */
 export interface CollectionsWidget {
@@ -1756,14 +2682,14 @@ export interface TaskSchedulePublish {
     doc?:
       | ({
           relationTo: 'pages';
-          value: string | Page;
+          value: number | Page;
         } | null)
       | ({
           relationTo: 'posts';
-          value: string | Post;
+          value: number | Post;
         } | null);
     global?: string | null;
-    user?: (string | null) | User;
+    user?: (number | null) | User;
   };
   output?: unknown;
 }

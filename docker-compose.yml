@@ -1,31 +1,47 @@
-version: '3'
-
 services:
-  payload:
-    image: node:18-alpine
-    ports:
-      - '3000:3000'
-    volumes:
-      - .:/home/node/app
-      - node_modules:/home/node/app/node_modules
-    working_dir: /home/node/app/
-    command: sh -c "yarn install && yarn dev"
-    depends_on:
-      - mongo
-    env_file:
-      - .env
 
-  mongo:
-    image: mongo:latest
+  payload:
+    image: ghcr.io/JOUW-USER/a4ddrunen:latest
+    restart: unless-stopped
+
     ports:
-      - '27017:27017'
-    command:
-      - --storageEngine=wiredTiger
+      - "3000:3000"
+
+    environment:
+      NODE_ENV: production
+      DATABASE_TYPE: ${DATABASE_TYPE}
+      DATABASE_URL: ${DATABASE_URL}
+
+      PAYLOAD_SECRET: ${PAYLOAD_SECRET}
+      NEXT_PUBLIC_SERVER_URL: ${NEXT_PUBLIC_SERVER_URL}
+      CRON_SECRET: ${CRON_SECRET}
+      PREVIEW_SECRET: ${PREVIEW_SECRET}
+
+      MS_GRAPH_TENANT_ID: ${MS_GRAPH_TENANT_ID}
+      MS_GRAPH_CLIENT_ID: ${MS_GRAPH_CLIENT_ID}
+      MS_GRAPH_CLIENT_SECRET: ${MS_GRAPH_CLIENT_SECRET}
+      MS_GRAPH_SENDER_EMAIL: ${MS_GRAPH_SENDER_EMAIL}
+
+      MOLLIE_API_KEY: ${MOLLIE_API_KEY}
+
     volumes:
-      - data:/data/db
-    logging:
-      driver: none
+      - payload_media:/app/public/media
+
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
 volumes:
-  data:
-  node_modules:
+  postgres_data:
+  payload_media:
