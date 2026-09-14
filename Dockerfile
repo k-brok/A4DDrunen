@@ -45,11 +45,6 @@ RUN corepack enable \
 RUN addgroup --system --gid 1001 nodejs \
   && adduser --system --uid 1001 nextjs
 
-# Payload CLI + dependencies
-COPY --from=deps /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
-
 # Next.js standalone
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
@@ -61,6 +56,12 @@ RUN mkdir .next \
 
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+# Payload CLI + dependencies (na standalone, zodat de volledige
+# node_modules de pruned standalone-node_modules overschrijft)
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
 
 # Payload config/source needed by CLI
 COPY --from=builder --chown=nextjs:nodejs /app/src ./src
