@@ -18,9 +18,19 @@ export const Users: CollectionConfig = {
   },
   auth: {
     forgotPassword: {
-      generateEmailHTML: ({ token, user }) => {
+      generateEmailHTML: (args) => {
+        if (!args) {
+          throw new Error('Forgot password email parameters ontbreken')
+        }
+
+        const { token, user } = args
+
         const resetURL = `${process.env.NEXT_PUBLIC_SERVER_URL}/admin/reset/${token}`
-        return forgotPasswordEmail({ name: user.name, resetURL })
+
+        return forgotPasswordEmail({
+          name: user.name || user.email,
+          resetURL,
+        })
       },
     },
   },

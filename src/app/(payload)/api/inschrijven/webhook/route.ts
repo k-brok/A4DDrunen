@@ -67,11 +67,14 @@ export async function POST(req: NextRequest) {
     let setPasswordURL: string | undefined
 
     if (registration.newAccountCreated) {
-      const { token } = await payload.forgotPassword({
+      const token = await payload.forgotPassword({
         collection: 'klanten',
-        data: { email: registration.contactEmail },
+        data: {
+          email: registration.contactEmail,
+        },
         disableEmail: true,
       })
+
       setPasswordURL = `${process.env.NEXT_PUBLIC_SERVER_URL}/account/wachtwoord-instellen/${token}`
     }
 

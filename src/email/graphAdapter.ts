@@ -10,14 +10,20 @@ type GraphAdapterArgs = {
 
 let cachedToken: { value: string; expiresAt: number } | null = null
 
-async function getAccessToken({ tenantId, clientId, clientSecret }: GraphAdapterArgs) {
+async function getAccessToken({
+  tenantId,
+  clientId,
+  clientSecret,
+}: GraphAdapterArgs): Promise<string> {
   if (cachedToken && cachedToken.expiresAt > Date.now() + 30_000) {
     return cachedToken.value
   }
 
   const response = await fetch(`https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
     body: new URLSearchParams({
       client_id: clientId,
       client_secret: clientSecret,
@@ -28,10 +34,15 @@ async function getAccessToken({ tenantId, clientId, clientSecret }: GraphAdapter
 
   if (!response.ok) {
     const errorText = await response.text()
+
     throw new Error(`Microsoft Graph token-aanvraag mislukt: ${response.status} ${errorText}`)
   }
 
-  const data = await response.json()
+  const data: {
+    access_token: string
+    expires_in: number
+  } = await response.json()
+
   cachedToken = {
     value: data.access_token,
     expiresAt: Date.now() + data.expires_in * 1000,
@@ -42,23 +53,28 @@ async function getAccessToken({ tenantId, clientId, clientSecret }: GraphAdapter
 
 function toRecipientList(value?: string | string[]) {
   if (!value) return []
+
   const list = Array.isArray(value) ? value : [value]
-  return list.map((address) => ({ emailAddress: { address } }))
+
+  return list.map((address) => ({
+    emailAddress: {
+      address,
+    },
+  }))
 }
 
-// Payload verwacht een FACTORY die de EmailAdapter teruggeeft, zelfde patroon als
-// nodemailerAdapter()/resendAdapter(): buiten-functie config, binnen-functie de echte adapter.
-export function graphAdapter(args: GraphAdapterArgs) {
+export function graphAdapter(args: GraphAdapterArgs): EmailAdapter {
   const { senderEmail, defaultFromName } = args
 
-  return (): EmailAdapter => ({
+  return {
     name: 'microsoft-graph',
     defaultFromAddress: senderEmail,
     defaultFromName,
+
     sendEmail: async (message: SendEmailOptions) => {
       const token = await getAccessToken(args)
 
-      const payload = {
+      const graphPayload = {
         message: {
           subject: message.subject,
           body: {
@@ -80,14 +96,15 @@ export function graphAdapter(args: GraphAdapterArgs) {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(payload),
+          body: JSON.stringify(graphPayload),
         },
       )
 
       if (!response.ok) {
         const errorText = await response.text()
+
         throw new Error(`Microsoft Graph e-mail versturen mislukt: ${response.status} ${errorText}`)
       }
     },
-  })
+  }
 }

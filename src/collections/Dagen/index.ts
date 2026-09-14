@@ -19,16 +19,16 @@ export const Dagen: CollectionConfig = {
   admin: {
     useAsTitle: 'label',
     defaultColumns: ['label', 'date', 'startTime', 'startLocation'],
-    defaultSort: 'date',
     baseListFilter: async ({ req }) => {
       const editionId = await getAdminEditionId(req)
-      if (!editionId) return undefined
+      if (!editionId) return null
 
       return {
         edition: { equals: editionId },
       }
     },
   },
+  defaultSort: 'date',
   fields: [
     {
       name: 'edition',

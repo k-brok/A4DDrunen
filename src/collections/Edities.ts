@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import type { Where } from 'payload'
 
 import { anyone } from '../access/anyone'
 import { authenticated } from '../access/authenticated'
@@ -78,18 +79,37 @@ export const Edities: CollectionConfig = {
   hooks: {
     beforeChange: [
       async ({ data, req, originalDoc }) => {
-        // ... bestaande 'actief'-hook blijft ongewijzigd ...
         if (data?.active) {
-          const where = originalDoc?.id
-            ? { and: [{ active: { equals: true } }, { id: { not_equals: originalDoc.id } }] }
-            : { active: { equals: true } }
+          const where: Where = originalDoc?.id
+            ? {
+                and: [
+                  {
+                    active: {
+                      equals: true,
+                    },
+                  },
+                  {
+                    id: {
+                      not_equals: originalDoc.id,
+                    },
+                  },
+                ],
+              }
+            : {
+                active: {
+                  equals: true,
+                },
+              }
 
           await req.payload.update({
             collection: 'edities',
             where,
-            data: { active: false },
+            data: {
+              active: false,
+            },
           })
         }
+
         return data
       },
     ],

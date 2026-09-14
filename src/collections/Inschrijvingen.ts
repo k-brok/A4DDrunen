@@ -22,7 +22,7 @@ export const Inschrijvingen: CollectionConfig = {
     defaultColumns: ['contactEmail', 'contactName', 'status', 'totalAmount', 'createdAt'],
     baseListFilter: async ({ req }) => {
       const editionId = await getAdminEditionId(req)
-      if (!editionId) return undefined
+      if (!editionId) return null
       return { edition: { equals: editionId } }
     },
   },

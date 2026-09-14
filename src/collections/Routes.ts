@@ -23,7 +23,7 @@ export const Routes: CollectionConfig = {
     defaultColumns: ['displayLabel', 'edition', 'distance'],
     baseListFilter: async ({ req }) => {
       const editionId = await getAdminEditionId(req)
-      if (!editionId) return undefined
+      if (!editionId) return null
 
       return {
         edition: { equals: editionId },
