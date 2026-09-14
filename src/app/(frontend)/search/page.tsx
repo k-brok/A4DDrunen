@@ -13,51 +13,78 @@ type Args = {
     q: string
   }>
 }
+
+async function getSearchResults(
+  payload: Awaited<ReturnType<typeof getPayload>>,
+  query: string | undefined,
+) {
+  try {
+    return await payload.find({
+      collection: 'search',
+      depth: 1,
+      limit: 12,
+      select: {
+        title: true,
+        slug: true,
+        categories: true,
+        meta: true,
+      },
+      // pagination: false reduces overhead if you don't need totalDocs
+      pagination: false,
+      ...(query
+        ? {
+            where: {
+              or: [
+                {
+                  title: {
+                    like: query,
+                  },
+                },
+                {
+                  'meta.description': {
+                    like: query,
+                  },
+                },
+                {
+                  'meta.title': {
+                    like: query,
+                  },
+                },
+                {
+                  slug: {
+                    like: query,
+                  },
+                },
+              ],
+            },
+          }
+        : {}),
+    })
+  } catch (error) {
+    console.warn(
+      '[search/page] Kon search-resultaten niet ophalen, val terug op lege lijst:',
+      error,
+    )
+    return {
+      docs: [],
+      totalDocs: 0,
+      totalPages: 0,
+      page: 1,
+      limit: 12,
+      hasNextPage: false,
+      hasPrevPage: false,
+      nextPage: null,
+      prevPage: null,
+      pagingCounter: 0,
+    }
+  }
+}
+
 export default async function Page({ searchParams: searchParamsPromise }: Args) {
   const { q: query } = await searchParamsPromise
   const payload = await getPayload({ config: configPromise })
 
-  const posts = await payload.find({
-    collection: 'search',
-    depth: 1,
-    limit: 12,
-    select: {
-      title: true,
-      slug: true,
-      categories: true,
-      meta: true,
-    },
-    // pagination: false reduces overhead if you don't need totalDocs
-    pagination: false,
-    ...(query
-      ? {
-          where: {
-            or: [
-              {
-                title: {
-                  like: query,
-                },
-              },
-              {
-                'meta.description': {
-                  like: query,
-                },
-              },
-              {
-                'meta.title': {
-                  like: query,
-                },
-              },
-              {
-                slug: {
-                  like: query,
-                },
-              },
-            ],
-          },
-        }
-      : {}),
-  })
+  const posts = await getSearchResults(payload, query)
 
   return (
     <div className="pt-24 pb-24">

@@ -11,21 +11,41 @@ import PageClient from './page.client'
 export const dynamic = 'force-static'
 export const revalidate = 600
 
+async function getPosts(payload: Awaited<ReturnType<typeof getPayload>>) {
+  try {
+    return await payload.find({
+      collection: 'posts',
+      depth: 1,
+      limit: 12,
+      overrideAccess: false,
+      select: {
+        title: true,
+        slug: true,
+        categories: true,
+        meta: true,
+      },
+    })
+  } catch (error) {
+    console.warn('[posts/page] Kon posts niet ophalen, val terug op lege lijst:', error)
+    return {
+      docs: [],
+      totalDocs: 0,
+      totalPages: 0,
+      page: 1,
+      limit: 12,
+      hasNextPage: false,
+      hasPrevPage: false,
+      nextPage: null,
+      prevPage: null,
+      pagingCounter: 0,
+    }
+  }
+}
+
 export default async function Page() {
   const payload = await getPayload({ config: configPromise })
 
-  const posts = await payload.find({
-    collection: 'posts',
-    depth: 1,
-    limit: 12,
-    overrideAccess: false,
-    select: {
-      title: true,
-      slug: true,
-      categories: true,
-      meta: true,
-    },
-  })
+  const posts = await getPosts(payload)
 
   return (
     <div className="pt-24 pb-24">

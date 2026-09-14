@@ -11,24 +11,6 @@ const getPagesSitemap = unstable_cache(
       process.env.VERCEL_PROJECT_PRODUCTION_URL ||
       'https://example.com'
 
-    const results = await payload.find({
-      collection: 'pages',
-      overrideAccess: false,
-      draft: false,
-      depth: 0,
-      limit: 1000,
-      pagination: false,
-      where: {
-        _status: {
-          equals: 'published',
-        },
-      },
-      select: {
-        slug: true,
-        updatedAt: true,
-      },
-    })
-
     const dateFallback = new Date().toISOString()
 
     const defaultSitemap = [
@@ -42,18 +24,44 @@ const getPagesSitemap = unstable_cache(
       },
     ]
 
-    const sitemap = results.docs
-      ? results.docs
-          .filter((page) => Boolean(page?.slug))
-          .map((page) => {
-            return {
-              loc: page?.slug === 'home' ? `${SITE_URL}/` : `${SITE_URL}/${page?.slug}`,
-              lastmod: page.updatedAt || dateFallback,
-            }
-          })
-      : []
+    try {
+      const results = await payload.find({
+        collection: 'pages',
+        overrideAccess: false,
+        draft: false,
+        depth: 0,
+        limit: 1000,
+        pagination: false,
+        where: {
+          _status: {
+            equals: 'published',
+          },
+        },
+        select: {
+          slug: true,
+          updatedAt: true,
+        },
+      })
 
-    return [...defaultSitemap, ...sitemap]
+      const sitemap = results.docs
+        ? results.docs
+            .filter((page) => Boolean(page?.slug))
+            .map((page) => {
+              return {
+                loc: page?.slug === 'home' ? `${SITE_URL}/` : `${SITE_URL}/${page?.slug}`,
+                lastmod: page.updatedAt || dateFallback,
+              }
+            })
+        : []
+
+      return [...defaultSitemap, ...sitemap]
+    } catch (error) {
+      console.warn(
+        '[pages-sitemap] Kon pagina-slugs niet ophalen, val terug op standaard sitemap:',
+        error,
+      )
+      return defaultSitemap
+    }
   },
   ['pages-sitemap'],
   {
