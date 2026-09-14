@@ -16,6 +16,10 @@ FROM base AS builder
 
 WORKDIR /app
 
+ENV DATABASE_URL=file:./a4ddrunen.db
+ENV DATABASE_TYPE=sqlite
+ENV PAYLOAD_SECRET=build-placeholder-secret
+
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
