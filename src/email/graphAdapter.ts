@@ -66,10 +66,10 @@ function toRecipientList(value?: string | string[]) {
 export function graphAdapter(args: GraphAdapterArgs): EmailAdapter {
   const { senderEmail, defaultFromName } = args
 
-  return {
-    name: 'microsoft-graph',
+  return () => ({
     defaultFromAddress: senderEmail,
     defaultFromName,
+    name: 'microsoft-graph',
 
     sendEmail: async (message: SendEmailOptions) => {
       const token = await getAccessToken(args)
@@ -106,5 +106,5 @@ export function graphAdapter(args: GraphAdapterArgs): EmailAdapter {
         throw new Error(`Microsoft Graph e-mail versturen mislukt: ${response.status} ${errorText}`)
       }
     },
-  }
+  })
 }
