@@ -40,5 +40,5 @@ jobs:
         run: pnpm build
         env:
           PAYLOAD_SECRET: YOUR_SECRET_HERE
-          DATABASE_URI: file:./a4ddrunen.db
+          DATABASE_URL: file:./a4ddrunen.db
           DATABASE_TYPE: sqlite
