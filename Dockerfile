@@ -12,6 +12,7 @@ RUN corepack enable \
   && corepack prepare pnpm@11.25.0 --activate \
   && pnpm install --frozen-lockfile
 
+
 FROM base AS builder
 
 WORKDIR /app
@@ -23,8 +24,10 @@ ENV PAYLOAD_SECRET=build-placeholder-secret
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-RUN corepack enable pnpm \
+RUN corepack enable \
+  && corepack prepare pnpm@11.25.0 --activate \
   && pnpm run build
+
 
 FROM base AS runner
 
@@ -34,9 +37,20 @@ ENV NODE_ENV=production
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
 
+RUN apk add --no-cache libc6-compat
+
+RUN corepack enable \
+  && corepack prepare pnpm@11.25.0 --activate
+
 RUN addgroup --system --gid 1001 nodejs \
   && adduser --system --uid 1001 nextjs
 
+# Payload CLI + dependencies
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
+
+# Next.js standalone
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
 RUN mkdir -p ./public/media \
@@ -47,9 +61,16 @@ RUN mkdir .next \
 
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+# Payload config/source needed by CLI
+COPY --from=builder --chown=nextjs:nodejs /app/src ./src
+
 COPY --from=builder --chown=nextjs:nodejs /app/docker-entrypoint.sh ./
+
 RUN chmod +x docker-entrypoint.sh
 
 USER nextjs
+
 EXPOSE 3000
+
 ENTRYPOINT ["./docker-entrypoint.sh"]
