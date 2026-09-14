@@ -65,6 +65,7 @@ COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
 
 # Payload config/source needed by CLI
 COPY --from=builder --chown=nextjs:nodejs /app/src ./src
+COPY --from=builder --chown=nextjs:nodejs /app/tsconfig.json ./tsconfig.json
 
 COPY --from=builder --chown=nextjs:nodejs /app/docker-entrypoint.sh ./
 
