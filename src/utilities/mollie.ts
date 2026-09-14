@@ -1,5 +1,17 @@
-import createMollieClient from '@mollie/api-client'
+import createMollieClient, { type MollieClient } from '@mollie/api-client'
 
-export const mollieClient = createMollieClient({
-  apiKey: process.env.MOLLIE_API_KEY || '',
-})
+let _mollieClient: MollieClient | null = null
+
+export function getMollieClient(): MollieClient {
+  if (!_mollieClient) {
+    const apiKey = process.env.MOLLIE_API_KEY
+
+    if (!apiKey) {
+      throw new Error('MOLLIE_API_KEY is not set')
+    }
+
+    _mollieClient = createMollieClient({ apiKey })
+  }
+
+  return _mollieClient
+}
