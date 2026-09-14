@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 
 import config from '@payload-config'
-import { mollieClient } from '@/utilities/mollie'
+import { getMollieClient } from '@/utilities/mollie'
 import { registrationConfirmationEmail } from '@/email/templates/registrationConfirmation'
 
 export async function POST(req: NextRequest) {
@@ -14,6 +14,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ received: true }, { status: 200 })
     }
 
+    const mollieClient = getMollieClient()
     const payment = await mollieClient.payments.get(paymentId)
     const payload = await getPayload({ config })
 

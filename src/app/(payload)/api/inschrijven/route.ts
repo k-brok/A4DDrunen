@@ -3,7 +3,7 @@ import { getPayload } from 'payload'
 import crypto from 'crypto'
 
 import config from '@payload-config'
-import { mollieClient } from '@/utilities/mollie'
+import { getMollieClient } from '@/utilities/mollie'
 
 type ParticipantInput = {
   name: string
@@ -128,6 +128,7 @@ export async function POST(req: NextRequest) {
       ),
     )
 
+    const mollieClient = getMollieClient()
     const payment = await mollieClient.payments.create({
       amount: {
         value: totalAmount.toFixed(2),
