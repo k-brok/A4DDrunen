@@ -42,7 +42,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TYPE "public"."enum__pages_v_version_status" AS ENUM('draft', 'published');
   CREATE TYPE "public"."enum_posts_status" AS ENUM('draft', 'published');
   CREATE TYPE "public"."enum__posts_v_version_status" AS ENUM('draft', 'published');
-  CREATE TYPE "public"."enum_users_role" AS ENUM('editor', 'admin');
+  CREATE TYPE "public"."enum_users_role" AS ENUM('klant', 'editor', 'admin');
   CREATE TYPE "public"."enum_routes_icon_type" AS ENUM('emoji', 'media');
   CREATE TYPE "public"."enum_inschrijvingen_status" AS ENUM('pending', 'paid', 'cancelled');
   CREATE TYPE "public"."enum_redirects_to_type" AS ENUM('reference', 'custom');
@@ -722,7 +722,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE TABLE "users" (
   	"id" serial PRIMARY KEY NOT NULL,
   	"name" varchar,
-  	"role" "enum_users_role" DEFAULT 'editor' NOT NULL,
+  	"role" "enum_users_role" DEFAULT 'klant' NOT NULL,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"email" varchar NOT NULL,
@@ -830,28 +830,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"start_location" varchar,
   	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
   	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
-  );
-  
-  CREATE TABLE "klanten_sessions" (
-  	"_order" integer NOT NULL,
-  	"_parent_id" integer NOT NULL,
-  	"id" varchar PRIMARY KEY NOT NULL,
-  	"created_at" timestamp(3) with time zone,
-  	"expires_at" timestamp(3) with time zone NOT NULL
-  );
-  
-  CREATE TABLE "klanten" (
-  	"id" serial PRIMARY KEY NOT NULL,
-  	"name" varchar NOT NULL,
-  	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
-  	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
-  	"email" varchar NOT NULL,
-  	"reset_password_token" varchar,
-  	"reset_password_expiration" timestamp(3) with time zone,
-  	"salt" varchar,
-  	"hash" varchar,
-  	"login_attempts" numeric DEFAULT 0,
-  	"lock_until" timestamp(3) with time zone
   );
   
   CREATE TABLE "prijs_opties" (
@@ -1169,7 +1147,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"routes_id" integer,
   	"faqs_id" integer,
   	"dagen_id" integer,
-  	"klanten_id" integer,
   	"prijs_opties_id" integer,
   	"inschrijvingen_id" integer,
   	"deelnemers_id" integer,
@@ -1193,8 +1170,7 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"order" integer,
   	"parent_id" integer NOT NULL,
   	"path" varchar NOT NULL,
-  	"users_id" integer,
-  	"klanten_id" integer
+  	"users_id" integer
   );
   
   CREATE TABLE "payload_migrations" (
@@ -1361,10 +1337,9 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "dagen_route_overrides" ADD CONSTRAINT "dagen_route_overrides_route_id_routes_id_fk" FOREIGN KEY ("route_id") REFERENCES "public"."routes"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "dagen_route_overrides" ADD CONSTRAINT "dagen_route_overrides_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."dagen"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "dagen" ADD CONSTRAINT "dagen_edition_id_edities_id_fk" FOREIGN KEY ("edition_id") REFERENCES "public"."edities"("id") ON DELETE set null ON UPDATE no action;
-  ALTER TABLE "klanten_sessions" ADD CONSTRAINT "klanten_sessions_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."klanten"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "prijs_opties" ADD CONSTRAINT "prijs_opties_edition_id_edities_id_fk" FOREIGN KEY ("edition_id") REFERENCES "public"."edities"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "inschrijvingen" ADD CONSTRAINT "inschrijvingen_edition_id_edities_id_fk" FOREIGN KEY ("edition_id") REFERENCES "public"."edities"("id") ON DELETE set null ON UPDATE no action;
-  ALTER TABLE "inschrijvingen" ADD CONSTRAINT "inschrijvingen_account_id_klanten_id_fk" FOREIGN KEY ("account_id") REFERENCES "public"."klanten"("id") ON DELETE set null ON UPDATE no action;
+  ALTER TABLE "inschrijvingen" ADD CONSTRAINT "inschrijvingen_account_id_users_id_fk" FOREIGN KEY ("account_id") REFERENCES "public"."users"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "deelnemers_selected_options" ADD CONSTRAINT "deelnemers_selected_options_option_id_prijs_opties_id_fk" FOREIGN KEY ("option_id") REFERENCES "public"."prijs_opties"("id") ON DELETE set null ON UPDATE no action;
   ALTER TABLE "deelnemers_selected_options" ADD CONSTRAINT "deelnemers_selected_options_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."deelnemers"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "deelnemers" ADD CONSTRAINT "deelnemers_registration_id_inschrijvingen_id_fk" FOREIGN KEY ("registration_id") REFERENCES "public"."inschrijvingen"("id") ON DELETE set null ON UPDATE no action;
@@ -1403,7 +1378,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_routes_fk" FOREIGN KEY ("routes_id") REFERENCES "public"."routes"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_faqs_fk" FOREIGN KEY ("faqs_id") REFERENCES "public"."faqs"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_dagen_fk" FOREIGN KEY ("dagen_id") REFERENCES "public"."dagen"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_klanten_fk" FOREIGN KEY ("klanten_id") REFERENCES "public"."klanten"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_prijs_opties_fk" FOREIGN KEY ("prijs_opties_id") REFERENCES "public"."prijs_opties"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_inschrijvingen_fk" FOREIGN KEY ("inschrijvingen_id") REFERENCES "public"."inschrijvingen"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_deelnemers_fk" FOREIGN KEY ("deelnemers_id") REFERENCES "public"."deelnemers"("id") ON DELETE cascade ON UPDATE no action;
@@ -1414,7 +1388,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_payload_folders_fk" FOREIGN KEY ("payload_folders_id") REFERENCES "public"."payload_folders"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_preferences_rels" ADD CONSTRAINT "payload_preferences_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."payload_preferences"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "payload_preferences_rels" ADD CONSTRAINT "payload_preferences_rels_users_fk" FOREIGN KEY ("users_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;
-  ALTER TABLE "payload_preferences_rels" ADD CONSTRAINT "payload_preferences_rels_klanten_fk" FOREIGN KEY ("klanten_id") REFERENCES "public"."klanten"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "header_nav_items" ADD CONSTRAINT "header_nav_items_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."header"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "header_rels" ADD CONSTRAINT "header_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."header"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "header_rels" ADD CONSTRAINT "header_rels_pages_fk" FOREIGN KEY ("pages_id") REFERENCES "public"."pages"("id") ON DELETE cascade ON UPDATE no action;
@@ -1660,11 +1633,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "dagen_edition_idx" ON "dagen" USING btree ("edition_id");
   CREATE INDEX "dagen_updated_at_idx" ON "dagen" USING btree ("updated_at");
   CREATE INDEX "dagen_created_at_idx" ON "dagen" USING btree ("created_at");
-  CREATE INDEX "klanten_sessions_order_idx" ON "klanten_sessions" USING btree ("_order");
-  CREATE INDEX "klanten_sessions_parent_id_idx" ON "klanten_sessions" USING btree ("_parent_id");
-  CREATE INDEX "klanten_updated_at_idx" ON "klanten" USING btree ("updated_at");
-  CREATE INDEX "klanten_created_at_idx" ON "klanten" USING btree ("created_at");
-  CREATE UNIQUE INDEX "klanten_email_idx" ON "klanten" USING btree ("email");
   CREATE INDEX "prijs_opties_edition_idx" ON "prijs_opties" USING btree ("edition_id");
   CREATE INDEX "prijs_opties_updated_at_idx" ON "prijs_opties" USING btree ("updated_at");
   CREATE INDEX "prijs_opties_created_at_idx" ON "prijs_opties" USING btree ("created_at");
@@ -1767,7 +1735,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "payload_locked_documents_rels_routes_id_idx" ON "payload_locked_documents_rels" USING btree ("routes_id");
   CREATE INDEX "payload_locked_documents_rels_faqs_id_idx" ON "payload_locked_documents_rels" USING btree ("faqs_id");
   CREATE INDEX "payload_locked_documents_rels_dagen_id_idx" ON "payload_locked_documents_rels" USING btree ("dagen_id");
-  CREATE INDEX "payload_locked_documents_rels_klanten_id_idx" ON "payload_locked_documents_rels" USING btree ("klanten_id");
   CREATE INDEX "payload_locked_documents_rels_prijs_opties_id_idx" ON "payload_locked_documents_rels" USING btree ("prijs_opties_id");
   CREATE INDEX "payload_locked_documents_rels_inschrijvingen_id_idx" ON "payload_locked_documents_rels" USING btree ("inschrijvingen_id");
   CREATE INDEX "payload_locked_documents_rels_deelnemers_id_idx" ON "payload_locked_documents_rels" USING btree ("deelnemers_id");
@@ -1783,7 +1750,6 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "payload_preferences_rels_parent_idx" ON "payload_preferences_rels" USING btree ("parent_id");
   CREATE INDEX "payload_preferences_rels_path_idx" ON "payload_preferences_rels" USING btree ("path");
   CREATE INDEX "payload_preferences_rels_users_id_idx" ON "payload_preferences_rels" USING btree ("users_id");
-  CREATE INDEX "payload_preferences_rels_klanten_id_idx" ON "payload_preferences_rels" USING btree ("klanten_id");
   CREATE INDEX "payload_migrations_updated_at_idx" ON "payload_migrations" USING btree ("updated_at");
   CREATE INDEX "payload_migrations_created_at_idx" ON "payload_migrations" USING btree ("created_at");
   CREATE INDEX "header_nav_items_order_idx" ON "header_nav_items" USING btree ("_order");
@@ -1871,8 +1837,6 @@ export async function down({ db, payload, req }: MigrateDownArgs): Promise<void>
   DROP TABLE "faqs" CASCADE;
   DROP TABLE "dagen_route_overrides" CASCADE;
   DROP TABLE "dagen" CASCADE;
-  DROP TABLE "klanten_sessions" CASCADE;
-  DROP TABLE "klanten" CASCADE;
   DROP TABLE "prijs_opties" CASCADE;
   DROP TABLE "inschrijvingen" CASCADE;
   DROP TABLE "deelnemers_selected_options" CASCADE;

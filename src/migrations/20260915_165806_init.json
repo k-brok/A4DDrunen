@@ -8174,7 +8174,7 @@
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
-          "default": "'editor'"
+          "default": "'klant'"
         },
         "updated_at": {
           "name": "updated_at",
@@ -9335,222 +9335,6 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.klanten_sessions": {
-      "name": "klanten_sessions",
-      "schema": "",
-      "columns": {
-        "_order": {
-          "name": "_order",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "_parent_id": {
-          "name": "_parent_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "id": {
-          "name": "id",
-          "type": "varchar",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp(3) with time zone",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "expires_at": {
-          "name": "expires_at",
-          "type": "timestamp(3) with time zone",
-          "primaryKey": false,
-          "notNull": true
-        }
-      },
-      "indexes": {
-        "klanten_sessions_order_idx": {
-          "name": "klanten_sessions_order_idx",
-          "columns": [
-            {
-              "expression": "_order",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "klanten_sessions_parent_id_idx": {
-          "name": "klanten_sessions_parent_id_idx",
-          "columns": [
-            {
-              "expression": "_parent_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {
-        "klanten_sessions_parent_id_fk": {
-          "name": "klanten_sessions_parent_id_fk",
-          "tableFrom": "klanten_sessions",
-          "tableTo": "klanten",
-          "columnsFrom": [
-            "_parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.klanten": {
-      "name": "klanten",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp(3) with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp(3) with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "email": {
-          "name": "email",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "reset_password_token": {
-          "name": "reset_password_token",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "reset_password_expiration": {
-          "name": "reset_password_expiration",
-          "type": "timestamp(3) with time zone",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "salt": {
-          "name": "salt",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "hash": {
-          "name": "hash",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "login_attempts": {
-          "name": "login_attempts",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": false,
-          "default": 0
-        },
-        "lock_until": {
-          "name": "lock_until",
-          "type": "timestamp(3) with time zone",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {
-        "klanten_updated_at_idx": {
-          "name": "klanten_updated_at_idx",
-          "columns": [
-            {
-              "expression": "updated_at",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "klanten_created_at_idx": {
-          "name": "klanten_created_at_idx",
-          "columns": [
-            {
-              "expression": "created_at",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "klanten_email_idx": {
-          "name": "klanten_email_idx",
-          "columns": [
-            {
-              "expression": "email",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": true,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
     "public.prijs_opties": {
       "name": "prijs_opties",
       "schema": "",
@@ -9840,10 +9624,10 @@
           "onDelete": "set null",
           "onUpdate": "no action"
         },
-        "inschrijvingen_account_id_klanten_id_fk": {
-          "name": "inschrijvingen_account_id_klanten_id_fk",
+        "inschrijvingen_account_id_users_id_fk": {
+          "name": "inschrijvingen_account_id_users_id_fk",
           "tableFrom": "inschrijvingen",
-          "tableTo": "klanten",
+          "tableTo": "users",
           "columnsFrom": [
             "account_id"
           ],
@@ -13085,12 +12869,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "klanten_id": {
-          "name": "klanten_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
         "prijs_opties_id": {
           "name": "prijs_opties_id",
           "type": "integer",
@@ -13341,21 +13119,6 @@
           "columns": [
             {
               "expression": "dagen_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "payload_locked_documents_rels_klanten_id_idx": {
-          "name": "payload_locked_documents_rels_klanten_id_idx",
-          "columns": [
-            {
-              "expression": "klanten_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -13644,19 +13407,6 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "payload_locked_documents_rels_klanten_fk": {
-          "name": "payload_locked_documents_rels_klanten_fk",
-          "tableFrom": "payload_locked_documents_rels",
-          "tableTo": "klanten",
-          "columnsFrom": [
-            "klanten_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
         "payload_locked_documents_rels_prijs_opties_fk": {
           "name": "payload_locked_documents_rels_prijs_opties_fk",
           "tableFrom": "payload_locked_documents_rels",
@@ -13892,12 +13642,6 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": false
-        },
-        "klanten_id": {
-          "name": "klanten_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
         }
       },
       "indexes": {
@@ -13960,21 +13704,6 @@
           "concurrently": false,
           "method": "btree",
           "with": {}
-        },
-        "payload_preferences_rels_klanten_id_idx": {
-          "name": "payload_preferences_rels_klanten_id_idx",
-          "columns": [
-            {
-              "expression": "klanten_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
         }
       },
       "foreignKeys": {
@@ -13997,19 +13726,6 @@
           "tableTo": "users",
           "columnsFrom": [
             "users_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "payload_preferences_rels_klanten_fk": {
-          "name": "payload_preferences_rels_klanten_fk",
-          "tableFrom": "payload_preferences_rels",
-          "tableTo": "klanten",
-          "columnsFrom": [
-            "klanten_id"
           ],
           "columnsTo": [
             "id"
@@ -15145,6 +14861,7 @@
       "name": "enum_users_role",
       "schema": "public",
       "values": [
+        "klant",
         "editor",
         "admin"
       ]
@@ -15240,6 +14957,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "9baae63d-995e-4792-a987-cbd54d4fea08",
+  "id": "d0f46d4b-992c-4eb9-bb72-1d41d806d816",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }
