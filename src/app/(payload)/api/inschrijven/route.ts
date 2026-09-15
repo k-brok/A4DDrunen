@@ -48,23 +48,24 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Geen actieve editie gevonden' }, { status: 400 })
     }
 
-    const { docs: existingKlanten } = await payload.find({
-      collection: 'klanten',
+    const { docs: existingUsers } = await payload.find({
+      collection: 'users',
       where: { email: { equals: contactEmail } },
       limit: 1,
     })
 
-    let klant = existingKlanten[0] as any
+    let account = existingUsers[0] as any
     let newAccountCreated = false
 
-    if (!klant) {
+    if (!account) {
       const randomPassword = crypto.randomBytes(16).toString('hex')
-      klant = await payload.create({
-        collection: 'klanten',
+      account = await payload.create({
+        collection: 'users',
         data: {
           name: contactName,
           email: contactEmail,
           password: randomPassword,
+          role: 'klant',
         },
       })
       newAccountCreated = true
@@ -106,7 +107,7 @@ export async function POST(req: NextRequest) {
       collection: 'inschrijvingen',
       data: {
         edition: edition.id,
-        account: klant.id,
+        account: account.id,
         contactName,
         contactEmail,
         contactPhone,

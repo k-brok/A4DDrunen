@@ -30,7 +30,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ received: true }, { status: 200 })
     }
 
-    // Voorkom dubbel verwerken als Mollie de webhook meerdere keren stuurt
     if (registration.status === 'paid') {
       return NextResponse.json({ received: true }, { status: 200 })
     }
@@ -45,7 +44,6 @@ export async function POST(req: NextRequest) {
       data: { status: 'paid' },
     })
 
-    // Deelnemers + hun route ophalen voor de bevestigingsmail
     const { docs: deelnemers } = await payload.find({
       collection: 'deelnemers',
       where: { registration: { equals: registration.id } },
@@ -69,13 +67,10 @@ export async function POST(req: NextRequest) {
 
     if (registration.newAccountCreated) {
       const token = await payload.forgotPassword({
-        collection: 'klanten',
-        data: {
-          email: registration.contactEmail,
-        },
+        collection: 'users',
+        data: { email: registration.contactEmail },
         disableEmail: true,
       })
-
       setPasswordURL = `${process.env.NEXT_PUBLIC_SERVER_URL}/account/wachtwoord-instellen/${token}`
     }
 
@@ -102,7 +97,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ received: true }, { status: 200 })
   } catch (error) {
     console.error('Mollie webhook fout:', error)
-    // Altijd 200 teruggeven, anders blijft Mollie de webhook herhalen
     return NextResponse.json({ received: true }, { status: 200 })
   }
 }

@@ -10,11 +10,13 @@ export const Inschrijvingen: CollectionConfig = {
     plural: 'Inschrijvingen',
   },
   access: {
-    // Aanmaken gebeurt via een eigen API-route (server-side, met de Local API),
-    // niet rechtstreeks door bezoekers via de REST/GraphQL-API.
     create: authenticated,
     delete: authenticated,
-    read: authenticated,
+    read: ({ req }) => {
+      if (!req.user) return false
+      if ((req.user as any).role !== 'klant') return true
+      return { account: { equals: req.user.id } }
+    },
     update: authenticated,
   },
   admin: {
@@ -40,7 +42,7 @@ export const Inschrijvingen: CollectionConfig = {
     {
       name: 'account',
       type: 'relationship',
-      relationTo: 'klanten',
+      relationTo: 'users',
       admin: {
         position: 'sidebar',
         description: 'Automatisch gekoppeld op basis van het e-mailadres',
