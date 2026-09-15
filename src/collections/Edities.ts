@@ -107,6 +107,7 @@ export const Edities: CollectionConfig = {
             data: {
               active: false,
             },
+            req,
           })
         }
 
@@ -139,6 +140,7 @@ export const Edities: CollectionConfig = {
           collection: 'dagen',
           where: { edition: { equals: doc.id } },
           limit: 100,
+          req,
         })
 
         const existingDates = new Set(
@@ -154,6 +156,7 @@ export const Edities: CollectionConfig = {
                 edition: doc.id,
                 date: day.toISOString(),
               },
+              req,
             })
           }
         }
