@@ -6,7 +6,7 @@ import type { Page } from '@/payload-types'
 
 import { Logo } from '@/components/Logo/Logo'
 
-export const logoHero: React.FC<Page['hero']> = ({ links, richText }) => {
+export const LogoHero: React.FC<Page['hero']> = ({ links, richText }) => {
   const { setHeaderTheme } = useHeaderTheme()
 
   useEffect(() => {
