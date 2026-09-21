@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 
 import { Button } from '@/components/ui/button'
+import { loginAction } from './login-action'
 
 export const LoginForm: React.FC = () => {
   const router = useRouter()
@@ -12,6 +13,7 @@ export const LoginForm: React.FC = () => {
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [rememberMe, setRememberMe] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
 
@@ -20,25 +22,15 @@ export const LoginForm: React.FC = () => {
     setError(null)
     setSubmitting(true)
 
-    const res = await fetch('/api/users/login', {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    })
+    const result = await loginAction(email, password, rememberMe)
 
-    if (!res.ok) {
-      setError('E-mailadres of wachtwoord onjuist.')
+    if (!result.success) {
+      setError(result.error)
       setSubmitting(false)
       return
     }
 
-    const data = await res.json()
-    if ((data.user as any)?.role === 'klant') {
-      router.push(redirectTo)
-    } else {
-      router.push('/admin')
-    }
+    router.push(result.role === 'klant' ? redirectTo : '/admin')
     router.refresh()
   }
 
@@ -66,7 +58,23 @@ export const LoginForm: React.FC = () => {
         />
       </div>
 
+      <label className="flex items-center gap-2 text-sm text-muted-foreground">
+        <input
+          type="checkbox"
+          checked={rememberMe}
+          onChange={(e) => setRememberMe(e.target.checked)}
+        />
+        Onthoud mij op dit apparaat
+      </label>
+
       {error && <p className="text-sm text-destructive">{error}</p>}
+
+      <a
+        href="/account/wachtwoord-vergeten"
+        className="text-sm text-muted-foreground underline underline-offset-2 hover:text-foreground"
+      >
+        Wachtwoord vergeten?
+      </a>
 
       <Button type="submit" disabled={submitting} className="w-full">
         {submitting ? 'Bezig...' : 'Inloggen'}

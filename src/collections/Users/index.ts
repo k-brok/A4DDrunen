@@ -6,6 +6,17 @@ import { forgotPasswordEmail } from '@/email/templates/forgotPassword'
 
 export const Users: CollectionConfig = {
   slug: 'users',
+  hooks: {
+    beforeDelete: [
+      async ({ req, id }) => {
+        await req.payload.update({
+          collection: 'inschrijvingen',
+          where: { account: { equals: id } },
+          data: { account: null },
+        })
+      },
+    ],
+  },
   access: {
     admin: ({ req }) => Boolean(req.user) && (req.user as any).role !== 'klant',
     create: anyone,
@@ -24,10 +35,12 @@ export const Users: CollectionConfig = {
   admin: {
     defaultColumns: ['name', 'email', 'role'],
     useAsTitle: 'name',
-    baseListFilter: () => ({ role: { not_equals: 'klant' } }),
+    //baseListFilter: () => ({ role: { not_equals: 'klant' } }),
   },
   auth: {
+    tokenExpiration: 60 * 60 * 24, // 1 dag, in seconden
     forgotPassword: {
+      expiration: 1000 * 60 * 15, // 15 minuten, in milliseconden
       generateEmailHTML: (args) => {
         if (!args?.token || !args?.user) {
           throw new Error('Missing token or user for password reset email')
@@ -38,7 +51,7 @@ export const Users: CollectionConfig = {
         const isKlant = (user as any).role === 'klant'
 
         const resetURL = isKlant
-          ? `${process.env.NEXT_PUBLIC_SERVER_URL}/account/wachtwoord-instellen/${token}`
+          ? `${process.env.NEXT_PUBLIC_SERVER_URL}/account/wachtwoord-vergeten/${token}`
           : `${process.env.NEXT_PUBLIC_SERVER_URL}/admin/reset/${token}`
 
         return forgotPasswordEmail({

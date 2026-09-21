@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
+import { randomBytes } from 'crypto'
 import crypto from 'crypto'
 
 import config from '@payload-config'
 import { getMollieClient } from '@/utilities/mollie'
+import { assignSponsorFairly } from '@/utilities/assignSponsorFairly'
+import { assignParticipantNumber } from '@/utilities/assignParticipantNumber'
 
 type ParticipantInput = {
   name: string
@@ -17,16 +20,32 @@ type RequestBody = {
   contactName: string
   contactEmail: string
   contactPhone?: string
+  createAccount?: boolean
+  privacyAccepted?: boolean
   participants: ParticipantInput[]
 }
 
 export async function POST(req: NextRequest) {
   try {
     const body: RequestBody = await req.json()
-    const { contactName, contactEmail, contactPhone, participants } = body
+    const {
+      contactName,
+      contactEmail,
+      contactPhone,
+      createAccount,
+      privacyAccepted,
+      participants,
+    } = body
 
     if (!contactName || !contactEmail || !participants?.length) {
       return NextResponse.json({ error: 'Ontbrekende gegevens' }, { status: 400 })
+    }
+
+    if (!privacyAccepted) {
+      return NextResponse.json(
+        { error: 'Je moet akkoord gaan met de privacyverklaring om door te gaan.' },
+        { status: 400 },
+      )
     }
 
     if (participants.some((p) => !p.name || !p.birthDate || !p.routeId)) {
@@ -57,7 +76,7 @@ export async function POST(req: NextRequest) {
     let account = existingUsers[0] as any
     let newAccountCreated = false
 
-    if (!account) {
+    if (!account && createAccount) {
       const randomPassword = crypto.randomBytes(16).toString('hex')
       account = await payload.create({
         collection: 'users',
@@ -103,31 +122,39 @@ export async function POST(req: NextRequest) {
       }
     })
 
+    const confirmationToken = randomBytes(32).toString('hex')
+
     const registration = await payload.create({
       collection: 'inschrijvingen',
       data: {
         edition: edition.id,
-        account: account.id,
+        account: account ? account.id : undefined,
         contactName,
         contactEmail,
         contactPhone,
+        confirmationToken,
+        confirmationTokenExpiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24).toISOString(),
         status: 'pending',
+        privacyAcceptedAt: new Date().toISOString(),
         totalAmount,
         newAccountCreated,
       },
     })
 
-    await Promise.all(
-      participantData.map((p) =>
-        payload.create({
-          collection: 'deelnemers',
-          data: {
-            ...p,
-            registration: registration.id,
-          },
-        }),
-      ),
-    )
+    for (const p of participantData) {
+      const sponsorId = await assignSponsorFairly(payload)
+      const participantNumber = await assignParticipantNumber(payload, edition.id)
+
+      await payload.create({
+        collection: 'deelnemers',
+        data: {
+          ...p,
+          registration: registration.id,
+          sponsor: sponsorId ?? undefined,
+          participantNumber,
+        },
+      })
+    }
 
     const mollieClient = getMollieClient()
     const payment = await mollieClient.payments.create({
@@ -136,7 +163,7 @@ export async function POST(req: NextRequest) {
         currency: 'EUR',
       },
       description: `Inschrijving ${edition.title}`,
-      redirectUrl: `${process.env.NEXT_PUBLIC_SERVER_URL}/inschrijven/bedankt?registration=${registration.id}`,
+      redirectUrl: `${process.env.NEXT_PUBLIC_SERVER_URL}/inschrijven/bedankt?registration=${registration.id}&token=${confirmationToken}`,
       webhookUrl: `${process.env.NEXT_PUBLIC_SERVER_URL}/api/inschrijven/webhook`,
       metadata: {
         registrationId: String(registration.id),

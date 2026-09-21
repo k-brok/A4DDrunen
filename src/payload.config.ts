@@ -26,6 +26,9 @@ import { Dagen } from './collections/Dagen'
 import { PrijsOpties } from './collections/PrijsOpties'
 import { Inschrijvingen } from './collections/Inschrijvingen'
 import { Deelnemers } from './collections/Deelnemers'
+import { Incheckmomenten } from './collections/Incheckmomenten'
+
+import { cleanupOldRegistrations } from './jobs/cleanupOldRegistrations'
 
 import { graphAdapter } from './email/graphAdapter'
 
@@ -108,6 +111,7 @@ export default buildConfig({
     PrijsOpties,
     Inschrijvingen,
     Deelnemers,
+    Incheckmomenten,
   ],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer, SiteSettings],
@@ -133,6 +137,13 @@ export default buildConfig({
         return authHeader === `Bearer ${secret}`
       },
     },
-    tasks: [],
+    tasks: [cleanupOldRegistrations],
+    autoRun: [
+      {
+        cron: '*/30 * * * *', // elke 30 minuten de 'cleanup'-queue verwerken
+        queue: 'cleanup',
+        limit: 50,
+      },
+    ],
   },
 })

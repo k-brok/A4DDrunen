@@ -49,6 +49,12 @@ export const Edities: CollectionConfig = {
       },
     },
     {
+      name: 'participantCounter',
+      type: 'number',
+      defaultValue: 0,
+      admin: { hidden: true },
+    },
+    {
       type: 'row',
       fields: [
         {

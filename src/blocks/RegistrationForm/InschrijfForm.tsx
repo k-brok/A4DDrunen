@@ -62,6 +62,8 @@ export const InschrijfForm: React.FC<Props> = ({ routes, options, pricePerPartic
   const [contactName, setContactName] = useState('')
   const [contactEmail, setContactEmail] = useState('')
   const [contactPhone, setContactPhone] = useState('')
+  const [createAccount, setCreateAccount] = useState(false)
+  const [privacyAccepted, setPrivacyAccepted] = useState(false)
 
   const [selfWalksAlong, setSelfWalksAlong] = useState(true)
   const [selfBirthDate, setSelfBirthDate] = useState('')
@@ -141,6 +143,11 @@ export const InschrijfForm: React.FC<Props> = ({ routes, options, pricePerPartic
     e.preventDefault()
     setError(null)
 
+    if (!privacyAccepted) {
+      setError('Je moet akkoord gaan met de privacyverklaring om door te gaan.')
+      return
+    }
+
     if (!contactName || !contactEmail) {
       setError('Vul je naam en e-mailadres in.')
       return
@@ -192,6 +199,8 @@ export const InschrijfForm: React.FC<Props> = ({ routes, options, pricePerPartic
           contactName,
           contactEmail,
           contactPhone,
+          createAccount,
+          privacyAccepted,
           participants: allParticipants,
         }),
       })
@@ -251,6 +260,36 @@ export const InschrijfForm: React.FC<Props> = ({ routes, options, pricePerPartic
               className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
             />
           </div>
+
+          <label className="flex items-center gap-2 border-t border-dashed border-border pt-4 text-sm text-muted-foreground">
+            <input
+              type="checkbox"
+              checked={createAccount}
+              onChange={(e) => setCreateAccount(e.target.checked)}
+            />
+            Maak een account voor mij aan, zodat ik mijn inschrijvingen later kan terugzien
+          </label>
+
+          <label className="flex items-start gap-2 text-sm text-muted-foreground">
+            <input
+              type="checkbox"
+              checked={privacyAccepted}
+              onChange={(e) => setPrivacyAccepted(e.target.checked)}
+              className="mt-0.5"
+              required
+            />
+            <span>
+              Ik ga akkoord met de{' '}
+              <a
+                href="/privacyverklaring"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2 hover:text-foreground"
+              >
+                privacyverklaring
+              </a>
+            </span>
+          </label>
 
           <label className="flex items-center gap-2 border-t border-dashed border-border pt-4 text-sm text-muted-foreground">
             <input

@@ -4,6 +4,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 import { getMollieClient } from '@/utilities/mollie'
 import { registrationConfirmationEmail } from '@/email/templates/registrationConfirmation'
+import { generateRegistrationTicketsPdf } from '@/utilities/tickets/generateTicketsPdf'
 
 export async function POST(req: NextRequest) {
   try {
@@ -71,7 +72,7 @@ export async function POST(req: NextRequest) {
         data: { email: registration.contactEmail },
         disableEmail: true,
       })
-      setPasswordURL = `${process.env.NEXT_PUBLIC_SERVER_URL}/account/wachtwoord-instellen/${token}`
+      setPasswordURL = `${process.env.NEXT_PUBLIC_SERVER_URL}/account/wachtwoord-vergeten/${token}`
     }
 
     const html = registrationConfirmationEmail({
@@ -82,10 +83,18 @@ export async function POST(req: NextRequest) {
       setPasswordURL,
     })
 
+    const pdfBytes = await generateRegistrationTicketsPdf(payload, registration.id)
+
     await payload.sendEmail({
       to: registration.contactEmail,
       subject: 'Bevestiging van je inschrijving',
       html,
+      attachments: [
+        {
+          filename: 'tickets.pdf',
+          content: Buffer.from(pdfBytes),
+        },
+      ],
     })
 
     await payload.update({

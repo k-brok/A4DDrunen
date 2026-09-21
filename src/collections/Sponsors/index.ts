@@ -116,5 +116,17 @@ export const Sponsors: CollectionConfig = {
         description: 'Aantal keer dat op deze sponsor is geklikt.',
       },
     },
+    {
+      name: 'ticketAssignmentCount',
+      type: 'number',
+      required: true,
+      defaultValue: 0,
+      min: 0,
+      admin: {
+        readOnly: true,
+        description:
+          'Aantal keer dat deze sponsor op een ticket is geplaatst (voor eerlijke verdeling).',
+      },
+    },
   ],
 }

@@ -16,6 +16,8 @@ const NEXT_PUBLIC_SERVER_URL =
 const nextConfig: NextConfig = {
   output: 'standalone',
 
+  allowedDevOrigins: [new URL(NEXT_PUBLIC_SERVER_URL).hostname],
+
   sassOptions: {
     loadPaths: ['./node_modules/@payloadcms/ui/dist/scss/'],
   },

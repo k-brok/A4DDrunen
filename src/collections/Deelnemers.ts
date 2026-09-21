@@ -76,6 +76,41 @@ export const Deelnemers: CollectionConfig = {
         },
       ],
     },
+    {
+      name: 'sponsor',
+      type: 'relationship',
+      relationTo: 'sponsors',
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+        description: 'Automatisch eerlijk toegewezen bij het aanmaken van het ticket.',
+      },
+    },
+    {
+      name: 'participantNumber',
+      type: 'number',
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+        description: 'Automatisch oplopend nummer binnen de editie.',
+      },
+    },
+    {
+      name: 'checkInToken',
+      type: 'text',
+      unique: true,
+      admin: { hidden: true },
+    },
   ],
+  hooks: {
+    beforeValidate: [
+      ({ data }) => {
+        if (data && !data.checkInToken) {
+          data.checkInToken = require('crypto').randomBytes(16).toString('hex')
+        }
+        return data
+      },
+    ],
+  },
   timestamps: true,
 }

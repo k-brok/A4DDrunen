@@ -68,9 +68,11 @@ export const Inschrijvingen: CollectionConfig = {
       defaultValue: 'pending',
       required: true,
       options: [
-        { label: 'In afwachting van betaling', value: 'pending' },
+        { label: 'In afwachting', value: 'pending' },
         { label: 'Betaald', value: 'paid' },
-        { label: 'Geannuleerd', value: 'cancelled' },
+        { label: 'Geannuleerd', value: 'canceled' },
+        { label: 'Verlopen', value: 'expired' },
+        { label: 'Mislukt', value: 'failed' },
       ],
       admin: {
         position: 'sidebar',
@@ -106,6 +108,38 @@ export const Inschrijvingen: CollectionConfig = {
       name: 'newAccountCreated',
       type: 'checkbox',
       defaultValue: false,
+      admin: {
+        hidden: true,
+      },
+    },
+    {
+      name: 'confirmationToken',
+      type: 'text',
+      unique: true,
+      admin: {
+        hidden: true,
+      },
+    },
+    {
+      name: 'confirmationTokenExpiresAt',
+      type: 'date',
+      admin: {
+        hidden: true,
+      },
+    },
+    {
+      name: 'personalDataRemoved',
+      type: 'checkbox',
+      defaultValue: false,
+      admin: {
+        position: 'sidebar',
+        readOnly: true,
+        description: 'Persoonsgegevens automatisch verwijderd wegens bewaartermijn.',
+      },
+    },
+    {
+      name: 'privacyAcceptedAt',
+      type: 'date',
       admin: {
         hidden: true,
       },
