@@ -1016,6 +1016,10 @@ export interface Sponsor {
   id: number;
   name: string;
   logo: number | Media;
+  /**
+   * Kies "Donker" als het logo wit is en anders onzichtbaar wordt op een witte achtergrond.
+   */
+  cardBackground: 'light' | 'dark';
   url: string;
   /**
    * Aantal keer dat deze sponsor daadwerkelijk is weergegeven.
@@ -2069,6 +2073,7 @@ export interface ContactgegevensSelect<T extends boolean = true> {
 export interface SponsorsSelect<T extends boolean = true> {
   name?: T;
   logo?: T;
+  cardBackground?: T;
   url?: T;
   displayCount?: T;
   clickCount?: T;

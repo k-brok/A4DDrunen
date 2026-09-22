@@ -56,6 +56,7 @@ export async function SponsorGroupBlock({ max = 'all', size = 'medium' }: Sponso
               size={size}
               rotationClass={pickRandom(rotationClasses)}
               borderColorClass={pickRandom(borderColorClasses)}
+              cardBackground={sponsor.cardBackground || 'light'}
             />
           )
         })}

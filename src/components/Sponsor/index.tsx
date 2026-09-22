@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from 'react'
 import type { Media } from '@/payload-types'
 
 type SponsorSize = 'small' | 'medium' | 'large'
+type CardBackground = 'light' | 'dark'
 
 type SponsorProps = {
   id: string
@@ -13,6 +14,7 @@ type SponsorProps = {
   size?: SponsorSize
   rotationClass?: string
   borderColorClass?: string
+  cardBackground?: CardBackground
 }
 
 export function Sponsor({
@@ -23,6 +25,7 @@ export function Sponsor({
   size = 'medium',
   rotationClass = '',
   borderColorClass = 'border-neutral-300',
+  cardBackground = 'light',
 }: SponsorProps) {
   const sponsorRef = useRef<HTMLAnchorElement>(null)
   const hasTrackedDisplay = useRef(false)
@@ -74,6 +77,8 @@ export function Sponsor({
     large: 'h-40 w-56',
   }[size]
 
+  const backgroundClass = cardBackground === 'dark' ? 'bg-neutral-800' : 'bg-white'
+
   return (
     <a
       ref={sponsorRef}
@@ -87,7 +92,7 @@ export function Sponsor({
         'border-2 border-dashed',
         borderColorClass,
         'rounded-tl-2xl rounded-br-2xl',
-        'bg-white',
+        backgroundClass,
         'transition-colors hover:border-neutral-500',
         sizeClass,
         rotationClass,

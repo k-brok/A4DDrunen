@@ -80,6 +80,20 @@ export const Sponsors: CollectionConfig = {
       required: true,
     },
     {
+      name: 'cardBackground',
+      type: 'select',
+      defaultValue: 'light',
+      required: true,
+      options: [
+        { label: 'Licht (wit)', value: 'light' },
+        { label: "Donker (voor witte logo's)", value: 'dark' },
+      ],
+      admin: {
+        description:
+          'Kies "Donker" als het logo wit is en anders onzichtbaar wordt op een witte achtergrond.',
+      },
+    },
+    {
       name: 'url',
       type: 'text',
       required: true,
