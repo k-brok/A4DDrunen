@@ -3,14 +3,12 @@ import React from 'react'
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 
-// Losse, structurele type i.p.v. gekoppeld aan één specifiek Payload-type —
-// zowel CardColumns-kaarten als vrijwilligersposities passen hierop.
 type IconCardData = {
   title: string
   description?: string | null
   iconType?: string | null
   emoji?: string | null
-  icon?: { url?: string | null; alt?: string | null } | null
+  icon?: number | { url?: string | null; alt?: string | null } | null
 }
 
 type Props = IconCardData & {
@@ -31,11 +29,14 @@ export const IconCard: React.FC<Props> = ({
   index = 0,
   variant = 'stacked',
 }) => {
+  const resolvedIcon =
+    icon && typeof icon === 'object' && 'url' in icon && icon.url ? icon : undefined
+
   const iconElement =
-    iconType === 'media' && icon && typeof icon === 'object' && icon.url ? (
+    iconType === 'media' && resolvedIcon ? (
       <Image
-        src={icon.url}
-        alt={icon.alt || title}
+        src={resolvedIcon.url as string}
+        alt={resolvedIcon.alt || title}
         width={variant === 'badge' ? 28 : 40}
         height={variant === 'badge' ? 28 : 40}
         className={variant === 'badge' ? 'h-7 w-7 object-contain' : 'h-10 w-10 object-contain'}
