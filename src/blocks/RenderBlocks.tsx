@@ -18,6 +18,7 @@ import { FaqGroupBlock } from '@/blocks/FaqGroup/Component'
 import { FlagDividerBlock } from '@/blocks/FlagDivider/Component'
 import { RouteDetailGroupBlock } from '@/blocks/RouteDetailGroup/Component'
 import { RegistrationFormBlock } from '@/blocks/RegistrationForm/Component'
+import { VolunteerPositionsGroupBlock } from '@/blocks/VolunteerPositionsGroup/Component'
 
 const blockComponents = {
   archive: ArchiveBlock,
@@ -36,6 +37,7 @@ const blockComponents = {
   flagDivider: FlagDividerBlock,
   routeDetailGroup: RouteDetailGroupBlock,
   registrationForm: RegistrationFormBlock,
+  volunteerPositionsGroup: VolunteerPositionsGroupBlock,
 }
 
 export const RenderBlocks: React.FC<{

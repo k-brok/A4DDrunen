@@ -6,6 +6,7 @@ import { ButtonGroup } from '@/blocks/ButtonGroup/config'
 import { FaqGroup } from '@/blocks/FaqGroup/config'
 import { FlagDivider } from '@/blocks/FlagDivider/config'
 import { RouteDetailGroup } from '@/blocks/RouteDetailGroup/config'
+import { VolunteerPositionsGroup } from '../../blocks/VolunteerPositionsGroup/config'
 
 export const WaveSection: Block = {
   slug: 'waveSection',
@@ -43,7 +44,15 @@ export const WaveSection: Block = {
       name: 'content',
       type: 'blocks',
       minRows: 1,
-      blocks: [CardColumns, IntroHeading, ButtonGroup, FaqGroup, FlagDivider, RouteDetailGroup],
+      blocks: [
+        CardColumns,
+        IntroHeading,
+        ButtonGroup,
+        FaqGroup,
+        FlagDivider,
+        RouteDetailGroup,
+        VolunteerPositionsGroup,
+      ],
       admin: {
         initCollapsed: true,
       },

@@ -82,6 +82,7 @@ export interface Config {
     inschrijvingen: Inschrijvingen;
     deelnemers: Deelnemer;
     incheckmomenten: Incheckmomenten;
+    'vrijwilliger-posities': VrijwilligerPosity;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -114,6 +115,7 @@ export interface Config {
     inschrijvingen: InschrijvingenSelect<false> | InschrijvingenSelect<true>;
     deelnemers: DeelnemersSelect<false> | DeelnemersSelect<true>;
     incheckmomenten: IncheckmomentenSelect<false> | IncheckmomentenSelect<true>;
+    'vrijwilliger-posities': VrijwilligerPositiesSelect<false> | VrijwilligerPositiesSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -243,6 +245,7 @@ export interface Page {
     | FlagDividerBlock
     | RouteDetailGroupBlock
     | RegistrationFormBlock
+    | VolunteerPositionsGroupBlock
   )[];
   meta?: {
     title?: string | null;
@@ -904,6 +907,7 @@ export interface WaveSectionBlock {
         | FaqGroupBlock
         | FlagDividerBlock
         | RouteDetailGroupBlock
+        | VolunteerPositionsGroupBlock
       )[]
     | null;
   id?: string | null;
@@ -962,6 +966,15 @@ export interface RouteDetailGroupBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'routeDetailGroup';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "VolunteerPositionsGroupBlock".
+ */
+export interface VolunteerPositionsGroupBlock {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'volunteerPositionsGroup';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1266,6 +1279,30 @@ export interface Incheckmomenten {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "vrijwilliger-posities".
+ */
+export interface VrijwilligerPosity {
+  id: number;
+  /**
+   * Bijvoorbeeld: "Verkeersregelaars"
+   */
+  title: string;
+  description: string;
+  iconType?: ('emoji' | 'media') | null;
+  /**
+   * Bijvoorbeeld: 🚦
+   */
+  emoji?: string | null;
+  icon?: (number | null) | Media;
+  /**
+   * Bepaalt de volgorde (laag = eerst)
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1524,6 +1561,10 @@ export interface PayloadLockedDocument {
         value: number | Incheckmomenten;
       } | null)
     | ({
+        relationTo: 'vrijwilliger-posities';
+        value: number | VrijwilligerPosity;
+      } | null)
+    | ({
         relationTo: 'redirects';
         value: number | Redirect;
       } | null)
@@ -1632,6 +1673,7 @@ export interface PagesSelect<T extends boolean = true> {
         flagDivider?: T | FlagDividerBlockSelect<T>;
         routeDetailGroup?: T | RouteDetailGroupBlockSelect<T>;
         registrationForm?: T | RegistrationFormBlockSelect<T>;
+        volunteerPositionsGroup?: T | VolunteerPositionsGroupBlockSelect<T>;
       };
   meta?:
     | T
@@ -1809,6 +1851,7 @@ export interface WaveSectionBlockSelect<T extends boolean = true> {
         faqGroup?: T | FaqGroupBlockSelect<T>;
         flagDivider?: T | FlagDividerBlockSelect<T>;
         routeDetailGroup?: T | RouteDetailGroupBlockSelect<T>;
+        volunteerPositionsGroup?: T | VolunteerPositionsGroupBlockSelect<T>;
       };
   id?: T;
   blockName?: T;
@@ -1853,6 +1896,14 @@ export interface FlagDividerBlockSelect<T extends boolean = true> {
  * via the `definition` "RouteDetailGroupBlock_select".
  */
 export interface RouteDetailGroupBlockSelect<T extends boolean = true> {
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "VolunteerPositionsGroupBlock_select".
+ */
+export interface VolunteerPositionsGroupBlockSelect<T extends boolean = true> {
   id?: T;
   blockName?: T;
 }
@@ -2223,6 +2274,20 @@ export interface IncheckmomentenSelect<T extends boolean = true> {
   dag?: T;
   type?: T;
   scannedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "vrijwilliger-posities_select".
+ */
+export interface VrijwilligerPositiesSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  iconType?: T;
+  emoji?: T;
+  icon?: T;
+  order?: T;
   updatedAt?: T;
   createdAt?: T;
 }
