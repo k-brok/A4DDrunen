@@ -1,15 +1,26 @@
 import Image from 'next/image'
 import React from 'react'
 
-import type { CardColumnsBlock } from '@/payload-types'
-
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 
+// Losse, structurele type i.p.v. gekoppeld aan één specifiek Payload-type —
+// zowel CardColumns-kaarten als vrijwilligersposities passen hierop.
+type IconCardData = {
+  title: string
+  description?: string | null
+  iconType?: string | null
+  emoji?: string | null
+  icon?: { url?: string | null; alt?: string | null } | null
+}
+
+type Props = IconCardData & {
+  index?: number
+  variant?: 'stacked' | 'badge'
+}
+
 const rotationClasses = ['-rotate-2', 'rotate-0', 'rotate-2']
-
-type CardItem = NonNullable<CardColumnsBlock['cards']>[number]
-
-type Props = CardItem & { index?: number }
+const badgeRotationClasses = ['-rotate-1', 'rotate-1']
+const badgeColorClasses = ['bg-primary', 'bg-accent', 'bg-success', 'bg-secondary']
 
 export const IconCard: React.FC<Props> = ({
   iconType,
@@ -18,24 +29,58 @@ export const IconCard: React.FC<Props> = ({
   title,
   description,
   index = 0,
+  variant = 'stacked',
 }) => {
+  const iconElement =
+    iconType === 'media' && icon && typeof icon === 'object' && icon.url ? (
+      <Image
+        src={icon.url}
+        alt={icon.alt || title}
+        width={variant === 'badge' ? 28 : 40}
+        height={variant === 'badge' ? 28 : 40}
+        className={variant === 'badge' ? 'h-7 w-7 object-contain' : 'h-10 w-10 object-contain'}
+      />
+    ) : (
+      emoji && (
+        <span className={variant === 'badge' ? 'text-2xl leading-none' : 'text-4xl leading-none'}>
+          {emoji}
+        </span>
+      )
+    )
+
+  if (variant === 'badge') {
+    const rotationClass = badgeRotationClasses[index % badgeRotationClasses.length]
+    const badgeColorClass = badgeColorClasses[index % badgeColorClasses.length]
+
+    return (
+      <Card className={['border-none shadow-md', rotationClass].join(' ')}>
+        <CardHeader className="flex-row items-center gap-4 space-y-0">
+          <div
+            className={[
+              'flex h-14 w-14 shrink-0 items-center justify-center rounded-xl',
+              badgeColorClass,
+            ].join(' ')}
+          >
+            {iconElement}
+          </div>
+          <CardTitle className="text-lg font-bold">{title}</CardTitle>
+        </CardHeader>
+
+        {description && (
+          <CardContent className="pt-0">
+            <CardDescription>{description}</CardDescription>
+          </CardContent>
+        )}
+      </Card>
+    )
+  }
+
   const rotationClass = rotationClasses[index % rotationClasses.length]
 
   return (
     <Card className={['border-none shadow-md', rotationClass].join(' ')}>
       <CardHeader>
-        {iconType === 'media' && icon && typeof icon === 'object' && icon.url ? (
-          <Image
-            src={icon.url}
-            alt={icon.alt || title}
-            width={40}
-            height={40}
-            className="h-10 w-10 object-contain"
-          />
-        ) : (
-          emoji && <span className="text-4xl leading-none">{emoji}</span>
-        )}
-
+        {iconElement}
         <CardTitle className="text-lg font-bold">{title}</CardTitle>
       </CardHeader>
 
