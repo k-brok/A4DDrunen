@@ -82,6 +82,7 @@ export interface Config {
     inschrijvingen: Inschrijvingen;
     deelnemers: Deelnemer;
     incheckmomenten: Incheckmomenten;
+    'vrijwilliger-posities': VrijwilligerPosity;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -114,6 +115,7 @@ export interface Config {
     inschrijvingen: InschrijvingenSelect<false> | InschrijvingenSelect<true>;
     deelnemers: DeelnemersSelect<false> | DeelnemersSelect<true>;
     incheckmomenten: IncheckmomentenSelect<false> | IncheckmomentenSelect<true>;
+    'vrijwilliger-posities': VrijwilligerPositiesSelect<false> | VrijwilligerPositiesSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -1266,6 +1268,30 @@ export interface Incheckmomenten {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "vrijwilliger-posities".
+ */
+export interface VrijwilligerPosity {
+  id: number;
+  /**
+   * Bijvoorbeeld: "Verkeersregelaars"
+   */
+  title: string;
+  description: string;
+  iconType?: ('emoji' | 'media') | null;
+  /**
+   * Bijvoorbeeld: 🚦
+   */
+  emoji?: string | null;
+  icon?: (number | null) | Media;
+  /**
+   * Bepaalt de volgorde (laag = eerst)
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1522,6 +1548,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'incheckmomenten';
         value: number | Incheckmomenten;
+      } | null)
+    | ({
+        relationTo: 'vrijwilliger-posities';
+        value: number | VrijwilligerPosity;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -2223,6 +2253,20 @@ export interface IncheckmomentenSelect<T extends boolean = true> {
   dag?: T;
   type?: T;
   scannedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "vrijwilliger-posities_select".
+ */
+export interface VrijwilligerPositiesSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  iconType?: T;
+  emoji?: T;
+  icon?: T;
+  order?: T;
   updatedAt?: T;
   createdAt?: T;
 }

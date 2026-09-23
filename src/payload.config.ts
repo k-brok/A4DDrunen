@@ -27,6 +27,7 @@ import { PrijsOpties } from './collections/PrijsOpties'
 import { Inschrijvingen } from './collections/Inschrijvingen'
 import { Deelnemers } from './collections/Deelnemers'
 import { Incheckmomenten } from './collections/Incheckmomenten'
+import { VrijwilligerPosities } from './collections/VrijwilligerPosities'
 
 import { cleanupOldRegistrations } from './jobs/cleanupOldRegistrations'
 
@@ -112,6 +113,7 @@ export default buildConfig({
     Inschrijvingen,
     Deelnemers,
     Incheckmomenten,
+    VrijwilligerPosities,
   ],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer, SiteSettings],
