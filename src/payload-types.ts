@@ -245,6 +245,7 @@ export interface Page {
     | FlagDividerBlock
     | RouteDetailGroupBlock
     | RegistrationFormBlock
+    | VolunteerPositionsGroupBlock
   )[];
   meta?: {
     title?: string | null;
@@ -906,6 +907,7 @@ export interface WaveSectionBlock {
         | FaqGroupBlock
         | FlagDividerBlock
         | RouteDetailGroupBlock
+        | VolunteerPositionsGroupBlock
       )[]
     | null;
   id?: string | null;
@@ -964,6 +966,15 @@ export interface RouteDetailGroupBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'routeDetailGroup';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "VolunteerPositionsGroupBlock".
+ */
+export interface VolunteerPositionsGroupBlock {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'volunteerPositionsGroup';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1662,6 +1673,7 @@ export interface PagesSelect<T extends boolean = true> {
         flagDivider?: T | FlagDividerBlockSelect<T>;
         routeDetailGroup?: T | RouteDetailGroupBlockSelect<T>;
         registrationForm?: T | RegistrationFormBlockSelect<T>;
+        volunteerPositionsGroup?: T | VolunteerPositionsGroupBlockSelect<T>;
       };
   meta?:
     | T
@@ -1839,6 +1851,7 @@ export interface WaveSectionBlockSelect<T extends boolean = true> {
         faqGroup?: T | FaqGroupBlockSelect<T>;
         flagDivider?: T | FlagDividerBlockSelect<T>;
         routeDetailGroup?: T | RouteDetailGroupBlockSelect<T>;
+        volunteerPositionsGroup?: T | VolunteerPositionsGroupBlockSelect<T>;
       };
   id?: T;
   blockName?: T;
@@ -1883,6 +1896,14 @@ export interface FlagDividerBlockSelect<T extends boolean = true> {
  * via the `definition` "RouteDetailGroupBlock_select".
  */
 export interface RouteDetailGroupBlockSelect<T extends boolean = true> {
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "VolunteerPositionsGroupBlock_select".
+ */
+export interface VolunteerPositionsGroupBlockSelect<T extends boolean = true> {
   id?: T;
   blockName?: T;
 }

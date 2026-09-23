@@ -9,6 +9,7 @@ import { FaqGroupBlock } from '@/blocks/FaqGroup/Component'
 import { RouteGroupBlock } from '@/blocks/RouteGroup/Component'
 import { FlagDividerBlock } from '@/blocks/FlagDivider/Component'
 import { RouteDetailGroupBlock } from '@/blocks/RouteDetailGroup/Component'
+import { VolunteerPositionsGroupBlock } from '@/blocks/VolunteerPositionsGroup/Component'
 
 type WaveColor = 'success' | 'primary' | 'secondary' | 'accent' | 'primarylight'
 type EdgeType = 'wave' | 'straight'
@@ -29,6 +30,7 @@ const nestedBlockComponents: Record<string, React.FC<any>> = {
   routeGroup: RouteGroupBlock,
   flagDivider: FlagDividerBlock,
   routeDetailGroup: RouteDetailGroupBlock,
+  volunteerPositionsGroup: VolunteerPositionsGroupBlock,
 }
 
 // Blocktypes die hier opgesomd staan, krijgen GEEN .container om zich heen (bv. full-bleed decoratie).
