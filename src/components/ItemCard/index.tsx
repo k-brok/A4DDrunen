@@ -11,7 +11,7 @@ type CardItem = NonNullable<CardColumnsBlock['cards']>[number]
 
 type Props = CardItem & { index?: number }
 
-export const EventCard: React.FC<Props> = ({
+export const ItemCard: React.FC<Props> = ({
   iconType,
   emoji,
   icon,
