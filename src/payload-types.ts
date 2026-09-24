@@ -246,6 +246,7 @@ export interface Page {
     | RouteDetailGroupBlock
     | RegistrationFormBlock
     | VolunteerPositionsGroupBlock
+    | InfoCardBlock
   )[];
   meta?: {
     title?: string | null;
@@ -996,6 +997,68 @@ export interface RegistrationFormBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "InfoCardBlock".
+ */
+export interface InfoCardBlock {
+  /**
+   * Bij een kleur wordt de tekst automatisch wit.
+   */
+  background: 'card' | 'primary' | 'secondary' | 'accent' | 'success';
+  /**
+   * Toon een icoon en titel bovenaan de kaart
+   */
+  showHeader?: boolean | null;
+  iconType?: ('emoji' | 'media') | null;
+  /**
+   * Bijvoorbeeld: ℹ️
+   */
+  emoji?: string | null;
+  icon?: (number | null) | Media;
+  title?: string | null;
+  /**
+   * Ondersteunt vet en opsommingen
+   */
+  richText?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Optioneel: een uitgelichte, vetgedrukte regel onderaan (vaste stijl, geen vrije kleurkeuze)
+   */
+  highlightText?: string | null;
+  showButton?: boolean | null;
+  link?: {
+    type?: ('reference' | 'custom') | null;
+    newTab?: boolean | null;
+    reference?:
+      | ({
+          relationTo: 'pages';
+          value: number | Page;
+        } | null)
+      | ({
+          relationTo: 'posts';
+          value: number | Post;
+        } | null);
+    url?: string | null;
+    label: string;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'infoCard';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "contactgegevens".
  */
 export interface Contactgegeven {
@@ -1674,6 +1737,7 @@ export interface PagesSelect<T extends boolean = true> {
         routeDetailGroup?: T | RouteDetailGroupBlockSelect<T>;
         registrationForm?: T | RegistrationFormBlockSelect<T>;
         volunteerPositionsGroup?: T | VolunteerPositionsGroupBlockSelect<T>;
+        infoCard?: T | InfoCardBlockSelect<T>;
       };
   meta?:
     | T
@@ -1920,6 +1984,32 @@ export interface RouteGroupBlockSelect<T extends boolean = true> {
  * via the `definition` "RegistrationFormBlock_select".
  */
 export interface RegistrationFormBlockSelect<T extends boolean = true> {
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "InfoCardBlock_select".
+ */
+export interface InfoCardBlockSelect<T extends boolean = true> {
+  background?: T;
+  showHeader?: T;
+  iconType?: T;
+  emoji?: T;
+  icon?: T;
+  title?: T;
+  richText?: T;
+  highlightText?: T;
+  showButton?: T;
+  link?:
+    | T
+    | {
+        type?: T;
+        newTab?: T;
+        reference?: T;
+        url?: T;
+        label?: T;
+      };
   id?: T;
   blockName?: T;
 }

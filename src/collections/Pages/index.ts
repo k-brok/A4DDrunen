@@ -19,6 +19,7 @@ import { FlagDivider } from '@/blocks/FlagDivider/config'
 import { RouteDetailGroup } from '@/blocks/RouteDetailGroup/config'
 import { RegistrationForm } from '@/blocks/RegistrationForm/config'
 import { VolunteerPositionsGroup } from '../../blocks/VolunteerPositionsGroup/config'
+import { InfoCard } from '@/blocks/InfoCard/config'
 import { hero } from '@/heros/config'
 import { slugField } from 'payload'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
@@ -102,6 +103,7 @@ export const Pages: CollectionConfig<'pages'> = {
                 RouteDetailGroup,
                 RegistrationForm,
                 VolunteerPositionsGroup,
+                InfoCard,
               ],
               required: true,
               admin: {
