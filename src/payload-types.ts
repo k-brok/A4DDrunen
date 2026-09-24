@@ -909,6 +909,7 @@ export interface WaveSectionBlock {
         | FlagDividerBlock
         | RouteDetailGroupBlock
         | VolunteerPositionsGroupBlock
+        | InfoCardBlock
       )[]
     | null;
   id?: string | null;
@@ -979,24 +980,6 @@ export interface VolunteerPositionsGroupBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "RouteGroupBlock".
- */
-export interface RouteGroupBlock {
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'routeGroup';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "RegistrationFormBlock".
- */
-export interface RegistrationFormBlock {
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'registrationForm';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "InfoCardBlock".
  */
 export interface InfoCardBlock {
@@ -1056,6 +1039,24 @@ export interface InfoCardBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'infoCard';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RouteGroupBlock".
+ */
+export interface RouteGroupBlock {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'routeGroup';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RegistrationFormBlock".
+ */
+export interface RegistrationFormBlock {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'registrationForm';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1916,6 +1917,7 @@ export interface WaveSectionBlockSelect<T extends boolean = true> {
         flagDivider?: T | FlagDividerBlockSelect<T>;
         routeDetailGroup?: T | RouteDetailGroupBlockSelect<T>;
         volunteerPositionsGroup?: T | VolunteerPositionsGroupBlockSelect<T>;
+        infoCard?: T | InfoCardBlockSelect<T>;
       };
   id?: T;
   blockName?: T;
@@ -1973,22 +1975,6 @@ export interface VolunteerPositionsGroupBlockSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "RouteGroupBlock_select".
- */
-export interface RouteGroupBlockSelect<T extends boolean = true> {
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "RegistrationFormBlock_select".
- */
-export interface RegistrationFormBlockSelect<T extends boolean = true> {
-  id?: T;
-  blockName?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "InfoCardBlock_select".
  */
 export interface InfoCardBlockSelect<T extends boolean = true> {
@@ -2010,6 +1996,22 @@ export interface InfoCardBlockSelect<T extends boolean = true> {
         url?: T;
         label?: T;
       };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RouteGroupBlock_select".
+ */
+export interface RouteGroupBlockSelect<T extends boolean = true> {
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "RegistrationFormBlock_select".
+ */
+export interface RegistrationFormBlockSelect<T extends boolean = true> {
   id?: T;
   blockName?: T;
 }
