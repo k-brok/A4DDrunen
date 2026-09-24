@@ -7,6 +7,7 @@ import { FaqGroup } from '@/blocks/FaqGroup/config'
 import { FlagDivider } from '@/blocks/FlagDivider/config'
 import { RouteDetailGroup } from '@/blocks/RouteDetailGroup/config'
 import { VolunteerPositionsGroup } from '../../blocks/VolunteerPositionsGroup/config'
+import { InfoCard } from '../InfoCard/config'
 
 export const WaveSection: Block = {
   slug: 'waveSection',
@@ -52,6 +53,7 @@ export const WaveSection: Block = {
         FlagDivider,
         RouteDetailGroup,
         VolunteerPositionsGroup,
+        InfoCard,
       ],
       admin: {
         initCollapsed: true,
