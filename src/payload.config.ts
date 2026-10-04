@@ -28,6 +28,10 @@ import { Inschrijvingen } from './collections/Inschrijvingen'
 import { Deelnemers } from './collections/Deelnemers'
 import { Incheckmomenten } from './collections/Incheckmomenten'
 import { VrijwilligerPosities } from './collections/VrijwilligerPosities'
+import { Personen } from './collections/Personen'
+import { VrijwilligerToewijzingen } from './collections/VrijwilligerToewijzingen'
+import { VrijwilligerBehoeften } from './collections/VrijwilligerBehoeften'
+import { VrijwilligerDiensten } from './collections/VrijwilligerDiensten'
 
 import { cleanupOldRegistrations } from './jobs/cleanupOldRegistrations'
 
@@ -114,6 +118,10 @@ export default buildConfig({
     Deelnemers,
     Incheckmomenten,
     VrijwilligerPosities,
+    Personen,
+    VrijwilligerToewijzingen,
+    VrijwilligerBehoeften,
+    VrijwilligerDiensten,
   ],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer, SiteSettings],

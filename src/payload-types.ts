@@ -83,6 +83,10 @@ export interface Config {
     deelnemers: Deelnemer;
     incheckmomenten: Incheckmomenten;
     'vrijwilliger-posities': VrijwilligerPosity;
+    personen: Personen;
+    'vrijwilliger-toewijzingen': VrijwilligerToewijzingen;
+    'vrijwilliger-behoeften': VrijwilligerBehoeften;
+    'vrijwilliger-diensten': VrijwilligerDiensten;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -116,6 +120,10 @@ export interface Config {
     deelnemers: DeelnemersSelect<false> | DeelnemersSelect<true>;
     incheckmomenten: IncheckmomentenSelect<false> | IncheckmomentenSelect<true>;
     'vrijwilliger-posities': VrijwilligerPositiesSelect<false> | VrijwilligerPositiesSelect<true>;
+    personen: PersonenSelect<false> | PersonenSelect<true>;
+    'vrijwilliger-toewijzingen': VrijwilligerToewijzingenSelect<false> | VrijwilligerToewijzingenSelect<true>;
+    'vrijwilliger-behoeften': VrijwilligerBehoeftenSelect<false> | VrijwilligerBehoeftenSelect<true>;
+    'vrijwilliger-diensten': VrijwilligerDienstenSelect<false> | VrijwilligerDienstenSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
@@ -1367,6 +1375,67 @@ export interface VrijwilligerPosity {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "personen".
+ */
+export interface Personen {
+  id: number;
+  /**
+   * Volledige naam, voor snelle weergave in lijsten en planning
+   */
+  name: string;
+  /**
+   * Optioneel: koppel aan een bestaand gebruikersaccount
+   */
+  account?: (number | null) | User;
+  /**
+   * Optioneel: volledige adres- en contactgegevens
+   */
+  contactgegevens?: (number | null) | Contactgegeven;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "vrijwilliger-toewijzingen".
+ */
+export interface VrijwilligerToewijzingen {
+  id: number;
+  edition: number | Edity;
+  persoon: number | Personen;
+  positie: number | VrijwilligerPosity;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "vrijwilliger-behoeften".
+ */
+export interface VrijwilligerBehoeften {
+  id: number;
+  edition: number | Edity;
+  dag: number | Dagen;
+  positie: number | VrijwilligerPosity;
+  /**
+   * Optioneel: alleen invullen als deze post specifiek voor (een van) deze route(s) is, bijvoorbeeld een drankpost. Leeg laten als de positie voor de hele dag geldt.
+   */
+  routes?: (number | Route)[] | null;
+  aantalBenodigd: number;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "vrijwilliger-diensten".
+ */
+export interface VrijwilligerDiensten {
+  id: number;
+  behoefte: number | VrijwilligerBehoeften;
+  persoon: number | Personen;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1627,6 +1696,22 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'vrijwilliger-posities';
         value: number | VrijwilligerPosity;
+      } | null)
+    | ({
+        relationTo: 'personen';
+        value: number | Personen;
+      } | null)
+    | ({
+        relationTo: 'vrijwilliger-toewijzingen';
+        value: number | VrijwilligerToewijzingen;
+      } | null)
+    | ({
+        relationTo: 'vrijwilliger-behoeften';
+        value: number | VrijwilligerBehoeften;
+      } | null)
+    | ({
+        relationTo: 'vrijwilliger-diensten';
+        value: number | VrijwilligerDiensten;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -2380,6 +2465,51 @@ export interface VrijwilligerPositiesSelect<T extends boolean = true> {
   emoji?: T;
   icon?: T;
   order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "personen_select".
+ */
+export interface PersonenSelect<T extends boolean = true> {
+  name?: T;
+  account?: T;
+  contactgegevens?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "vrijwilliger-toewijzingen_select".
+ */
+export interface VrijwilligerToewijzingenSelect<T extends boolean = true> {
+  edition?: T;
+  persoon?: T;
+  positie?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "vrijwilliger-behoeften_select".
+ */
+export interface VrijwilligerBehoeftenSelect<T extends boolean = true> {
+  edition?: T;
+  dag?: T;
+  positie?: T;
+  routes?: T;
+  aantalBenodigd?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "vrijwilliger-diensten_select".
+ */
+export interface VrijwilligerDienstenSelect<T extends boolean = true> {
+  behoefte?: T;
+  persoon?: T;
   updatedAt?: T;
   createdAt?: T;
 }
