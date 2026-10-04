@@ -1,7 +1,7 @@
 import { Clock, MapPin } from 'lucide-react'
 import React from 'react'
 
-import { formatDayLabelNL, formatTimeNL } from '@/utilities/formatDateRangeNL'
+import { formatDayLabelNL, formatTimeNL } from '@/utilities/formatDateTime'
 import { resolveRouteDayInfo } from '@/utilities/resolveRouteDayInfo'
 
 type DayItem = {

@@ -4,7 +4,7 @@ import { getPayload } from 'payload'
 import config from '@payload-config'
 
 import { RouteCardExpanded } from '@/components/RouteCardExpanded'
-import { formatDateRangeNL } from '@/utilities/formatDateRangeNL'
+import { formatDateRangeNL } from '@/utilities/formatDateTime'
 
 export async function RouteDetailGroupBlock() {
   const payload = await getPayload({ config })
