@@ -11126,7 +11126,7 @@
           "type": "boolean",
           "primaryKey": false,
           "notNull": false,
-          "default": 0
+          "default": false
         },
         "updated_at": {
           "name": "updated_at",
@@ -11244,7 +11244,7 @@
           "type": "boolean",
           "primaryKey": false,
           "notNull": false,
-          "default": 0
+          "default": false
         },
         "foto_id": {
           "name": "foto_id",
@@ -17385,6 +17385,6 @@
     "tables": {},
     "columns": {}
   },
-  "id": "76d024b5-329f-436e-bd15-5c2b850cae19",
+  "id": "aca79682-5ae8-4649-aee1-78fde05fc351",
   "prevId": "00000000-0000-0000-0000-000000000000"
 }

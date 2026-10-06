@@ -74,7 +74,7 @@ export const VrijwilligerPosities: CollectionConfig = {
     {
       name: 'listVisability',
       type: 'checkbox',
-      defaultValue: 0,
+      defaultValue: false,
       admin: {
         position: 'sidebar',
         description:

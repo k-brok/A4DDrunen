@@ -19,8 +19,8 @@ export async function up({ db, payload, req }: MigrateUpArgs): Promise<void> {
   	"block_name" varchar
   );
   
-  ALTER TABLE "vrijwilliger_posities" ADD COLUMN "list_visability" boolean DEFAULT 0;
-  ALTER TABLE "personen" ADD COLUMN "list_visability" boolean DEFAULT 0;
+  ALTER TABLE "vrijwilliger_posities" ADD COLUMN "list_visability" boolean DEFAULT false;
+  ALTER TABLE "personen" ADD COLUMN "list_visability" boolean DEFAULT false;
   ALTER TABLE "personen" ADD COLUMN "foto_id" integer;
   ALTER TABLE "personen" ADD COLUMN "foto_toestemming" boolean DEFAULT false;
   ALTER TABLE "personen" ADD COLUMN "volgorde" numeric DEFAULT 0;

@@ -48,7 +48,7 @@ export const Personen: CollectionConfig = {
     {
       name: 'listVisability',
       type: 'checkbox',
-      defaultValue: 0,
+      defaultValue: false,
       admin: {
         position: 'sidebar',
         description: 'Bepaalt of deze persoon zichtbaar is in de lijst van organisatoren',
