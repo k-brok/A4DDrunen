@@ -20,6 +20,7 @@ import { RouteDetailGroupBlock } from '@/blocks/RouteDetailGroup/Component'
 import { RegistrationFormBlock } from '@/blocks/RegistrationForm/Component'
 import { VolunteerPositionsGroupBlock } from '@/blocks/VolunteerPositionsGroup/Component'
 import { InfoCardBlock } from '@/blocks/InfoCard/Component'
+import { OrganizationGroupBlock } from '@/blocks/OrganizationGroup/Component'
 
 const blockComponents = {
   archive: ArchiveBlock,
@@ -40,6 +41,7 @@ const blockComponents = {
   registrationForm: RegistrationFormBlock,
   volunteerPositionsGroup: VolunteerPositionsGroupBlock,
   infoCard: InfoCardBlock,
+  organizationGroup: OrganizationGroupBlock,
 }
 
 export const RenderBlocks: React.FC<{

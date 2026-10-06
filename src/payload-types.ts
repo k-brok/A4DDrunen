@@ -255,6 +255,7 @@ export interface Page {
     | RegistrationFormBlock
     | VolunteerPositionsGroupBlock
     | InfoCardBlock
+    | OrganizationGroupBlock
   )[];
   meta?: {
     title?: string | null;
@@ -1068,6 +1069,15 @@ export interface RegistrationFormBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "OrganizationGroupBlock".
+ */
+export interface OrganizationGroupBlock {
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'organizationGroup';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "contactgegevens".
  */
 export interface Contactgegeven {
@@ -1370,6 +1380,10 @@ export interface VrijwilligerPosity {
    * Bepaalt de volgorde (laag = eerst)
    */
   order?: number | null;
+  /**
+   * Bepaalt of deze positie zichtbaar is in de lijst van beschikbare posities voor vrijwilligers
+   */
+  listVisability?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1391,6 +1405,22 @@ export interface Personen {
    * Optioneel: volledige adres- en contactgegevens
    */
   contactgegevens?: (number | null) | Contactgegeven;
+  /**
+   * Bepaalt of deze persoon zichtbaar is in de lijst van organisatoren
+   */
+  listVisability?: boolean | null;
+  /**
+   * Optioneel. Wordt alleen getoond als "Toestemming foto" is aangevinkt.
+   */
+  foto?: (number | null) | Media;
+  /**
+   * AVG: alleen aanvinken als deze persoon expliciet toestemming heeft gegeven om zijn/haar foto op de website te tonen.
+   */
+  fotoToestemming?: boolean | null;
+  /**
+   * Bepaalt de volgorde op de organisatiepagina (laag = eerst)
+   */
+  volgorde?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1824,6 +1854,7 @@ export interface PagesSelect<T extends boolean = true> {
         registrationForm?: T | RegistrationFormBlockSelect<T>;
         volunteerPositionsGroup?: T | VolunteerPositionsGroupBlockSelect<T>;
         infoCard?: T | InfoCardBlockSelect<T>;
+        organizationGroup?: T | OrganizationGroupBlockSelect<T>;
       };
   meta?:
     | T
@@ -2097,6 +2128,14 @@ export interface RouteGroupBlockSelect<T extends boolean = true> {
  * via the `definition` "RegistrationFormBlock_select".
  */
 export interface RegistrationFormBlockSelect<T extends boolean = true> {
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "OrganizationGroupBlock_select".
+ */
+export interface OrganizationGroupBlockSelect<T extends boolean = true> {
   id?: T;
   blockName?: T;
 }
@@ -2465,6 +2504,7 @@ export interface VrijwilligerPositiesSelect<T extends boolean = true> {
   emoji?: T;
   icon?: T;
   order?: T;
+  listVisability?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -2476,6 +2516,10 @@ export interface PersonenSelect<T extends boolean = true> {
   name?: T;
   account?: T;
   contactgegevens?: T;
+  listVisability?: T;
+  foto?: T;
+  fotoToestemming?: T;
+  volgorde?: T;
   updatedAt?: T;
   createdAt?: T;
 }

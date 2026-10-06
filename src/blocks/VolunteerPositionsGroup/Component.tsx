@@ -10,6 +10,7 @@ export async function VolunteerPositionsGroupBlock() {
 
   const { docs: positions } = await payload.find({
     collection: 'vrijwilliger-posities',
+    where: { listVisability: { equals: true } },
     sort: 'order',
     limit: 50,
   })

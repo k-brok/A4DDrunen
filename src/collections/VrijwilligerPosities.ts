@@ -71,5 +71,15 @@ export const VrijwilligerPosities: CollectionConfig = {
         description: 'Bepaalt de volgorde (laag = eerst)',
       },
     },
+    {
+      name: 'listVisability',
+      type: 'checkbox',
+      defaultValue: 0,
+      admin: {
+        position: 'sidebar',
+        description:
+          'Bepaalt of deze positie zichtbaar is in de lijst van beschikbare posities voor vrijwilligers',
+      },
+    },
   ],
 }
