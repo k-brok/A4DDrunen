@@ -7,6 +7,7 @@ import { FaqGroup } from '@/blocks/FaqGroup/config'
 import { FlagDivider } from '@/blocks/FlagDivider/config'
 import { RouteDetailGroup } from '@/blocks/RouteDetailGroup/config'
 import { VolunteerPositionsGroup } from '../../blocks/VolunteerPositionsGroup/config'
+import { OrganizationGroup } from '../../blocks/OrganizationGroup/config'
 import { InfoCard } from '../InfoCard/config'
 
 export const WaveSection: Block = {
@@ -53,6 +54,7 @@ export const WaveSection: Block = {
         FlagDivider,
         RouteDetailGroup,
         VolunteerPositionsGroup,
+        OrganizationGroup,
         InfoCard,
       ],
       admin: {
