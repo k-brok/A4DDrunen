@@ -5,6 +5,7 @@ import config from '@payload-config'
 import { getMollieClient } from '@/utilities/mollie'
 import { registrationConfirmationEmail } from '@/email/templates/registrationConfirmation'
 import { generateRegistrationTicketsPdf } from '@/utilities/tickets/generateTicketsPdf'
+import { assignParticipantNumber } from '@/utilities/assignParticipantNumber'
 
 export async function POST(req: NextRequest) {
   try {
@@ -68,6 +69,16 @@ export async function POST(req: NextRequest) {
         price: o.priceAtRegistration,
       })),
     }))
+
+    for (const p of deelnemers as any[]) {
+      const participantNumber = await assignParticipantNumber(payload, edition.id)
+
+      await payload.update({
+        collection: 'deelnemers',
+        id: p.id,
+        data: { participantNumber: participantNumber },
+      })
+    }
 
     let setPasswordURL: string | undefined
 
