@@ -68,6 +68,8 @@ export const Inschrijvingen: CollectionConfig = {
       defaultValue: 'pending',
       required: true,
       options: [
+        { label: 'Open', value: 'open' },
+        { label: 'Geauthoriseerd', value: 'authorized' },
         { label: 'In afwachting', value: 'pending' },
         { label: 'Betaald', value: 'paid' },
         { label: 'Geannuleerd', value: 'canceled' },
