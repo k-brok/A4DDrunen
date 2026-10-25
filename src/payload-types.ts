@@ -1293,7 +1293,7 @@ export interface Inschrijvingen {
   contactName: string;
   contactEmail: string;
   contactPhone?: string | null;
-  status: 'pending' | 'paid' | 'canceled' | 'expired' | 'failed';
+  status: 'open' | 'authorized' | 'pending' | 'paid' | 'canceled' | 'expired' | 'failed';
   /**
    * Berekend uit deelnemers + gekozen opties
    */
