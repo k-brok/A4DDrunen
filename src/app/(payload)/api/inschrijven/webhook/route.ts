@@ -36,6 +36,11 @@ export async function POST(req: NextRequest) {
     }
 
     if (payment.status !== 'paid') {
+      await payload.update({
+        collection: 'inschrijvingen',
+        id: registration.id,
+        data: { status: payment.status },
+      })
       return NextResponse.json({ received: true }, { status: 200 })
     }
 
