@@ -28,9 +28,11 @@ const FAILED_MESSAGES: Record<string, string> = {
 export function BetalingStatus({
   token,
   initialStatus,
+  retryPaymentUrl,
 }: {
   token: string
   initialStatus: StatusResponse
+  retryPaymentUrl: string | undefined
 }) {
   const [data, setData] = useState<StatusResponse>(initialStatus)
 
@@ -137,6 +139,12 @@ export function BetalingStatus({
         className="mt-8 inline-block rounded-lg bg-primary px-5 py-3 text-primary-foreground"
       >
         Opnieuw inschrijven
+      </Link>
+      <Link
+        href={retryPaymentUrl ?? '/inschrijven'}
+        className="mt-8 inline-block rounded-lg bg-primary px-5 py-3 text-primary-foreground"
+      >
+        betaling opnieuw proberen
       </Link>
     </main>
   )

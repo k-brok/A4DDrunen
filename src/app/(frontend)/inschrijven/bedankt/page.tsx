@@ -2,6 +2,8 @@ import { notFound } from 'next/navigation'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 
+import { getMollieClient } from '@/utilities/mollie'
+
 import { BetalingStatus } from './BetalingStatus'
 
 export const dynamic = 'force-dynamic'
@@ -64,6 +66,9 @@ export default async function BedanktPage({ searchParams }: Props) {
     }))
   }
 
+  const mollieClient = getMollieClient()
+  const payment = await mollieClient.payments.get(registration.molliePaymentId)
+
   return (
     <BetalingStatus
       token={token}
@@ -74,6 +79,7 @@ export default async function BedanktPage({ searchParams }: Props) {
         totalAmount: registration.totalAmount,
         participants,
       }}
+      retryPaymentUrl={payment._links.checkout?.href || undefined}
     />
   )
 }
