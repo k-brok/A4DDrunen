@@ -6,7 +6,6 @@ import crypto from 'crypto'
 import config from '@payload-config'
 import { getMollieClient } from '@/utilities/mollie'
 import { assignSponsorFairly } from '@/utilities/assignSponsorFairly'
-import { assignParticipantNumber } from '@/utilities/assignParticipantNumber'
 
 type ParticipantInput = {
   name: string
@@ -143,7 +142,6 @@ export async function POST(req: NextRequest) {
 
     for (const p of participantData) {
       const sponsorId = await assignSponsorFairly(payload)
-      const participantNumber = await assignParticipantNumber(payload, edition.id)
 
       await payload.create({
         collection: 'deelnemers',
@@ -151,7 +149,6 @@ export async function POST(req: NextRequest) {
           ...p,
           registration: registration.id,
           sponsor: sponsorId ?? undefined,
-          participantNumber,
         },
       })
     }
