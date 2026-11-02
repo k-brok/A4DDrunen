@@ -13,38 +13,6 @@ import { generateMeta } from '@/utilities/generateMeta'
 import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 
-export async function generateStaticParams() {
-  try {
-    const payload = await getPayload({ config: configPromise })
-    const pages = await payload.find({
-      collection: 'pages',
-      draft: false,
-      limit: 1000,
-      overrideAccess: false,
-      pagination: false,
-      select: {
-        slug: true,
-      },
-    })
-
-    const params = pages.docs
-      ?.filter((doc) => {
-        return doc.slug !== 'home'
-      })
-      .map(({ slug }) => {
-        return { slug }
-      })
-
-    return params
-  } catch (error) {
-    console.warn(
-      '[generateStaticParams] Kon paginas niet ophalen tijdens build, val terug op lege lijst:',
-      error,
-    )
-    return []
-  }
-}
-
 type Args = {
   params: Promise<{
     slug?: string
