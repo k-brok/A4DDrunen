@@ -1,10 +1,12 @@
 // app/(frontend)/account/page.tsx
 import { redirect } from 'next/navigation'
+import { Link } from 'next/link'
 import { headers as getHeaders } from 'next/headers'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 
 import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import { LogoutButton } from './LogoutButton'
 import { DeleteAccountButton } from './DeleteAccountButton'
 
@@ -32,10 +34,6 @@ export default async function AccountPage() {
 
   if (!user) {
     redirect('/account/inloggen?redirect=/account')
-  }
-
-  if ((user as any).role !== 'klant') {
-    redirect('/admin')
   }
 
   const { docs: registrations } = await payload.find({
@@ -176,6 +174,12 @@ export default async function AccountPage() {
       </div>
 
       <div className="mt-12 border-t border-dashed border-border pt-6">
+        {(user as any).role === 'admin' && (
+          <Button asChild variant="outline" className="text-destructive">
+            <Link href="/admin">Admin dashboard</Link>
+          </Button>
+        )}
+
         <DeleteAccountButton />
       </div>
     </main>
