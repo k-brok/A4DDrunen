@@ -1,5 +1,3 @@
-import { emailLayout } from './layout'
-
 type ForgotPasswordEmailArgs = {
   name?: string | null
   resetURL: string
@@ -20,8 +18,5 @@ export function forgotPasswordEmail({ name, resetURL }: ForgotPasswordEmailArgs)
     </p>
   `
 
-  return emailLayout({
-    previewText: 'Stel je nieuwe wachtwoord in',
-    bodyHTML,
-  })
+  return bodyHTML
 }

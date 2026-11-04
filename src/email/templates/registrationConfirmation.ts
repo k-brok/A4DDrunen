@@ -1,5 +1,3 @@
-import { emailLayout } from './layout'
-
 type Participant = {
   name: string
   routeTitle: string
@@ -69,8 +67,5 @@ export function registrationConfirmationEmail({
     </p>
   `
 
-  return emailLayout({
-    previewText: `Je inschrijving voor ${editionTitle} is bevestigd`,
-    bodyHTML,
-  })
+  return bodyHTML
 }
