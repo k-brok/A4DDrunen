@@ -1,4 +1,5 @@
 import type { EmailAdapter, SendEmailOptions } from 'payload'
+import { emailLayout } from './layout'
 
 type GraphAdapterArgs = {
   tenantId: string
@@ -79,7 +80,9 @@ export function graphAdapter(args: GraphAdapterArgs): EmailAdapter {
           subject: message.subject,
           body: {
             contentType: message.html ? 'HTML' : 'Text',
-            content: message.html ? String(message.html) : String(message.text ?? ''),
+            content: emailLayout(message.html)
+              ? String(emailLayout(message.html))
+              : String(message.text ?? ''),
           },
           toRecipients: toRecipientList(message.to),
           ccRecipients: toRecipientList(message.cc),
