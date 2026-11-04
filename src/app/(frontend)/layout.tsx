@@ -54,6 +54,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   )
 }
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   metadataBase: new URL(getServerSideURL()),
   openGraph: mergeOpenGraph(),
