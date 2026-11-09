@@ -1,6 +1,6 @@
 // app/(frontend)/account/page.tsx
 import { redirect } from 'next/navigation'
-import { Link } from 'next/link'
+import Link from 'next/link'
 import { headers as getHeaders } from 'next/headers'
 import { getPayload } from 'payload'
 import config from '@payload-config'
